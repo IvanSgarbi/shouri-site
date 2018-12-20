@@ -1,3 +1,4 @@
 $ cat Documentation/.gitignore
 api/node_modules/*
 scripts/jquery-3.3.1.min.js
+api/teste.bat
