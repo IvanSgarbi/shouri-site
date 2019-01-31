@@ -1,6 +1,5 @@
 $ cat Documentation/.gitignore
 node_modules
-scripts/jquery-3.3.1.min.js
 api/teste.bat
 api/dados/*
 start shouri.bat
