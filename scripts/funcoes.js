@@ -24,7 +24,7 @@ module.exports = {
                     configs = JSON.parse(configs);
                     funcoes.config = configs;
                     log("Sucesso ao inicializar configs!", "verde");
-                    log(funcoes.config);
+                    log(JSON.stringify(funcoes.config) ,"azul");
                     iniciar_sessoes();
                 }
             });
@@ -41,7 +41,7 @@ module.exports = {
                     arquivo = JSON.parse(arquivo);
                     funcoes.sessoes = arquivo;
                     log("Sucesso ao inicializar sessoes!", "verde");
-                    log(funcoes.sessoes);
+                    log(JSON.stringify(funcoes.sessoes),"azul");
                     server = app.listen(port);
                     server.timeout = 3000;
                     log("INICIANDO SERVIDOR...........", "verde");
@@ -154,7 +154,7 @@ module.exports = {
     },
     //ENVIAR DADOS DE USUARIOS ADMIN-----------------------------------
     solicitar_usuarios: function (usuario, res) {
-        log("Cheacando ADMIN do usuário " + usuario.id);
+        log("Cheacando ADMIN do usuário " + usuario.id, "amarelo");
         var cont;
         var admin = false;
         var caminho = path.join(diretorio + "/dados/usuarios.json");
@@ -172,7 +172,7 @@ module.exports = {
             }
             if (admin) {
                 log("Enviando lista de usuários!", "verde");
-                log(arquivo.usuarios, "vermelho");
+                log(JSON.stringify(arquivo.usuarios), "azul");
                 res.write(JSON.stringify(arquivo.usuarios));
                 res.end();
             } else {
@@ -662,7 +662,7 @@ module.exports = {
                     } else {
                         log("Sucesso ao ler arquivo de mapeamento por categorias", "verde");
                         arquivo_categorias = JSON.parse(arquivo_categorias);
-                        log("Array de categorias:", "azul_claro");
+                        log("Array de categorias:", "azul");
                         log(categorias);
                         //laço para cada uma das categorias da postagem
                         for (cont = 0; cont < categorias.length; cont++) {

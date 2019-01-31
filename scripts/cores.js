@@ -5,7 +5,7 @@ var cores = {
     amarelo: "\x1b[33m",
     azul: "\x1b[34m",
     rosa: "\x1b[35m",
-    azul_claro: "\x1b[36m",
+    ciano: "\x1b[36m",
     branco: "\x1b[37m",
     fundo_preto: "\x1b[40m",
     fundo_vermelho: "\x1b[41m",
@@ -13,7 +13,7 @@ var cores = {
     fundo_amarelo: "\x1b[43m",
     fundo_azul: "\x1b[44m",
     fundo_rosa: "\x1b[45m",
-    fundo_azul_claro: "\x1b[46m",
+    fundo_ciano: "\x1b[46m",
     fundo_branco: "\x1b[47m",
     resetar: "\x1b[0m",
     string: "%s"

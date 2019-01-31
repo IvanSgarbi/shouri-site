@@ -70,7 +70,7 @@ app.get("/posts/:categoria", function (req, res) {
 //ACESSAR QUALQUER AREA SOMENTE PARA USUARIOS -------------------------
 app.get("/*", function (req, res) {
     log("GET DE AUTENTICAÇÃO", "amarelo");
-    log(req._parsedUrl.path);
+    log(req._parsedUrl.path, "azul");
     //log(req.rawHeaders);
     var pagina = req._parsedUrl.path.split("/");
     pagina = pagina[pagina.length - 1];
@@ -85,16 +85,16 @@ app.get("/*", function (req, res) {
         return;
     } else {
         log("endpoint de acessso restrito: " + pagina,"amarelo");
-        log("Verificar Credenciais");
+        log("Verificar Credenciais", "amarelo");
         if (req.headers["shouri-user"] && req.headers["shouri-token"]
             && req.headers["shouri-user"] != "null" && req.headers["shouri-token"] != "null") {
-            log("Credenciais existentes, verificar token");
+            log("Credenciais existentes, verificar token", "verde");
             var user = {
                 id: req.headers["shouri-user"],
                 token: req.headers["shouri-token"]
             }
             if (funcoes.checar_token(user) == "permitido") {
-                log("sucesso! Redirecionanado para a página!","azul_claro");
+                log("sucesso! Redirecionanado para a página!","verde");
                 funcoes.localizar_pagina(req, res, pagina);
             } else {
                 log("Erro na requisição do token, enviando para login","vermelho");
@@ -102,10 +102,10 @@ app.get("/*", function (req, res) {
             }
 
         } else if (req.headers["shouri-user"] == "null" || req.headers["shouri-token"] == "null") {
-            log("Erro na requisição do token, enviando para login");
+            log("Erro na requisição do token, enviando para login", "vermelho");
             funcoes.redirecionar(res, "login");
         } else {
-            log("Sem credenciais, Enviando solicitação");
+            log("Sem credenciais, Enviando solicitação", "vermelho");
             funcoes.solicitar_token(res, pagina);
         }
     }
@@ -129,7 +129,7 @@ app.post("/usuarios/consultar", function (req, res) {
     log("POST DE CONSULTA", "amarelo");
     log("post de detalhes de usuários recebido", "amarelo");
     var user = req.body;
-    log(user);
+    log(JSON.stringify(user), "azul");
     var permissao = funcoes.checar_token(user);
     log("Permissão lida: " + permissao, "amarelo");
     if (permissao == "permitido") {
