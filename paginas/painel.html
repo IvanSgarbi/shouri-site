@@ -1,4 +1,5 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Shouri Site</title>
@@ -12,7 +13,7 @@
         .tabela-sessoes{
             margin: auto;
             display: block;
-            width: 500px;
+            width: 600px;
             border: 1px solid #000000;
             border-radius: 5px;
             background: #CCCCCC;
@@ -24,6 +25,7 @@
     </style>
     <link rel="icon" href="img/favicon.png" type="image/png">
 </head>
+
 <body>
 
     <p>VOCÊ ESTÁ NA ÁREA RESTRITA!</p>
@@ -36,16 +38,21 @@
             <td colspan="3">Sessões Ativas</td>
         </tr>
         <tr>
+            <td width="100"></td>
             <td width="100">Nome</td>
             <td width="200">Token</td>
             <td width="200">Expira em</td>
         </tr>
         <tr class="dados"></tr>
     </table>
+    <br>
+    <span id="info-sessoes"></span>
     <br><br>
     <button id="carregar-usuarios">Requisitar Usuários</button>
     <p id="paragrafo-usuarios"></p>
-    <script src="scripts/painel.js"></script>
+    <br>
+    <a href="/postar"><button>Postar</button></a>
 
+    <script src="scripts/painel.js"></script>
 </body>
 </html>

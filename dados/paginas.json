@@ -2,6 +2,7 @@
     "paginas": [
         "index",
         "login",
-        "painel"
+        "painel",
+        "postar"
     ]
 }
