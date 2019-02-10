@@ -553,10 +553,10 @@ module.exports = {
                         titulo: post.titulo,
                         data: new Date().toLocaleString()
                     }
-                    gravar_post();
+                    gravar_post(posts);
                 }
             });
-        function gravar_post() {
+        function gravar_post(posts) {
             log("iniciando gravação do post no arquivo de postagens", "amarelo");
             fs.writeFile(
                 path.join(diretorio + "/dados/posts/" + arquivo + ".json"),
