@@ -19,13 +19,13 @@ app.get("/", function (req, res) {
 });
 //ENDPOINT DE TESTES -----------------------------------------
 
-app.get("/teste",function (req, res) {
-    log("Foi o html de teste","amarelo");
+app.get("/teste", function (req, res) {
+    log("Foi o html de teste", "amarelo");
     var caminho = __dirname;
     res.sendFile(path.join(caminho + "/paginas/teste.html"));
 });
 //CATEGORIAS --------------------------------------------------
-app.get("/categorias",function (req,res) {
+app.get("/categorias", function (req, res) {
     funcoes.listar_categorias(res);
 });
 //LOGIN -------------------------------------------------------
@@ -48,7 +48,7 @@ app.post("/login", function (dados, res) {
                 usuario = arquivo.usuarios[cont];
                 if (usuario.id == dados.id && senha == usuario.senha) {
                     token = funcoes.gerarToken();
-                    funcoes.gravar_token(usuario.id,res, token);                    
+                    funcoes.gravar_token(usuario.id, res, token);
                     return;
                 }
             }
@@ -60,12 +60,12 @@ app.post("/login", function (dados, res) {
 //ACESSAR POST --------------------------------------------------------
 app.get("/post/:id", function (req, res) {
     log("O post id=" + req.params.id + " foi solicitado", "amarelo");
-    funcoes.post_id(req.params.id,res);
+    funcoes.post_id(req.params.id, res);
 });
 //LISTAR POSTS POR CATEGORIA ------------------------------------------
 app.get("/posts/:categoria", function (req, res) {
     log("A categoria " + req.params.categoria + " foi solicitada", "amarelo");
-    funcoes.posts_cat(req.params.categoria,res);
+    funcoes.posts_cat(req.params.categoria, res);
 });
 //ACESSAR QUALQUER AREA SOMENTE PARA USUARIOS -------------------------
 app.get("/*", function (req, res) {
@@ -79,12 +79,12 @@ app.get("/*", function (req, res) {
         funcoes.enviar_arquivo(req, res);
         return;
     } else if (URLs_livres.includes(pagina)) {
-        log("Endpoint de acesso livre: " + pagina,"verde");
+        log("Endpoint de acesso livre: " + pagina, "verde");
         var caminho = __dirname;
         res.sendFile(path.join(caminho + "/paginas/" + pagina + ".html"));
         return;
     } else {
-        log("endpoint de acessso restrito: " + pagina,"amarelo");
+        log("endpoint de acessso restrito: " + pagina, "amarelo");
         log("Verificar Credenciais", "amarelo");
         if (req.headers["shouri-user"] && req.headers["shouri-token"]
             && req.headers["shouri-user"] != "null" && req.headers["shouri-token"] != "null") {
@@ -94,10 +94,10 @@ app.get("/*", function (req, res) {
                 token: req.headers["shouri-token"]
             }
             if (funcoes.checar_token(user) == "permitido") {
-                log("sucesso! Redirecionanado para a página!","verde");
+                log("sucesso! Redirecionanado para a página!", "verde");
                 funcoes.localizar_pagina(req, res, pagina);
             } else {
-                log("Erro na requisição do token, enviando para login","vermelho");
+                log("Erro na requisição do token, enviando para login", "vermelho");
                 funcoes.redirecionar(res, "login");
             }
         } else if (req.headers["shouri-user"] == "null" || req.headers["shouri-token"] == "null") {
@@ -152,23 +152,43 @@ app.post("/sessoes/apagar", function (req, res) {
         funcoes.apagar_sessoes(res, user.nome);
     } else {
         res.status(401);
-        res.write("ERRO: Usuario não autenticado","vermelho");
+        res.write("ERRO: Usuario não autenticado", "vermelho");
         res.end();
     }
 });
 //ADICIONAR POST ----------------------------------------------------
-app.post("/post/criar",function (req,res){
+app.post("/post/criar", function (req, res) {
     var post = req.body;
     var user = post.user;
     log(user);
     var permissao = funcoes.checar_token(user);
     log("Permissão lida: " + permissao, "amarelo");
     if (permissao == "permitido") {
-        funcoes.registrar_post(post,res);
+        funcoes.registrar_post(post, res);
     } else {
         res.status(401);
         res.write("ERRO: Usuario não autenticado", "vermelho");
         res.end();
     }
 });
-funcoes.iniciar(server,port,app);
+//APAGAR CATEGORIA --------------------------------------------------
+app.post("/categoria/:cat",
+    function (req, res) {
+        var categoria = req.params.cat;
+        var user = req.body;
+        log(user);
+        var permissao = funcoes.checar_token(user);
+        log("Permissão lida: " + permissao, "amarelo");
+        if (permissao == "permitido") {
+            log("A categoria " + categoria + " será deletada");
+            //AQUI -------------------------------
+            res.write("A categoria " + categoria + " será deletada");
+            res.end();
+        }else{
+            res.status = 401;
+            res.write("Acesso negado");
+            res.end();
+        }
+    }
+);
+funcoes.iniciar(server, port, app);

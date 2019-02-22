@@ -14,10 +14,10 @@ document.getElementById("carregar-sessoes").onclick = function (evento) {
     conexao.onreadystatechange = function () {
         if (this.response && this.readyState == 4 && this.status == 200) {
             sessoes = JSON.parse(this.response);
-            preencherTabela(sessoes);
+            preencher_tabela(sessoes);
         } else {
             console.log(this.responseText);
-            document.getElementsByClassName("dados")[0].innerText = "";
+            document.getElementById("dados").innerText = "";
         }
     };
 }
@@ -74,18 +74,24 @@ document.onclick = function (evento) {
                 categorias = JSON.parse(categorias);
                 console.log(categorias);
                 var tabela = document.getElementById("categorias").children[0];
+                tabela.innerHTML = "";
                 for (var cont = 0; cont < categorias.length; cont++) {
                     tabela.innerHTML = tabela.innerHTML + "<tr>" +
-                        "<td><a href='posts/+"+categorias[cont]+"'>"+categorias[cont]+"</a></td>" +
-                        "<td><button id='"+categorias[cont]+"' class='apagar_categoria'>Apagar</button></td>" +
+                        "<td><a href='posts/" + categorias[cont] + "'>" + categorias[cont] + "</a></td>" +
+                        "<td><button id='" + categorias[cont] + "' class='apagar-categoria'>Apagar</button></td>" +
                         "</tr>"
                 }
-                //tabela.innerHTML = tabela.innerHTML.replace(/<tbody>|<\/tbody>/g, "");
             }
+        }
+    } else if (evento.target.classList.contains("apagar-categoria")) {
+        var id = evento.target.getAttribute("id");
+        if (confirm("Tem certeza que deseja apagar a categoria '" + id +
+            "'? Todas as referencias serão apagadas das postagens e esse processo não possui volta.")) {
+            apagar_categoria(id);
         }
     }
 }
-function preencherTabela(sessoes) {
+function preencher_tabela(sessoes) {
     var nome;
     var tr = [];
     var td;
@@ -111,9 +117,25 @@ function preencherTabela(sessoes) {
         td.width = 200;
         td.innerText = new Date(sessoes[nome].vida).toLocaleString();
         tr[3] = td;
-        document.querySelector(".tabela-sessoes .dados").innerHTML = "";
-        document.querySelector(".tabela-sessoes .dados").append(
+        document.getElementById("dados").innerHTML = "";
+        document.getElementById("dados").append(
             tr[0], tr[1], tr[2], tr[3]
         );
     }
+}
+function apagar_categoria(id) {
+    var credenciais = {
+        "id": localStorage.getItem("shouri-user"),
+        "token": localStorage.getItem("shouri-token")
+    }
+    var conexao = new XMLHttpRequest();
+    conexao.open("POST", "categoria/" + id, true);
+    conexao.setRequestHeader("content-type", "application/json");
+    conexao.send(JSON.stringify(credenciais));
+    conexao.onreadystatechange = function () {
+        if (this.response && this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+        }
+    }
+    console.log("teste" + id);
 }
