@@ -1,4 +1,4 @@
-console.log("Teste");
+console.log("Iniciando JS da pagina de posts");
 var categorias_adicionadas = [];
 var categorias;
 document.onclick = function (ev) {
@@ -25,6 +25,11 @@ document.onclick = function (ev) {
             conexao.onreadystatechange = function () {
                 if (this.response && this.readyState == 4 && this.status == 200) {
                     console.log(this.responseText);
+                    var resposta = JSON.parse(this.responseText);
+                    window.open(resposta.link);
+
+                } else if (this.status != 200) {
+                    document.getElementById("resultado").innerHTML = "Erro";
                 }
             }
         }

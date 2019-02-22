@@ -74,7 +74,7 @@ app.get("/*", function (req, res) {
     //log(req.rawHeaders);
     var pagina = req._parsedUrl.path.split("/");
     pagina = pagina[pagina.length - 1];
-    if (pagina.indexOf(".") > 0) {
+    if (pagina.includes(".")) {
         log("Arquivo solicitado", "verde");
         funcoes.enviar_arquivo(req, res);
         return;
@@ -100,7 +100,6 @@ app.get("/*", function (req, res) {
                 log("Erro na requisição do token, enviando para login","vermelho");
                 funcoes.redirecionar(res, "login");
             }
-
         } else if (req.headers["shouri-user"] == "null" || req.headers["shouri-token"] == "null") {
             log("Erro na requisição do token, enviando para login", "vermelho");
             funcoes.redirecionar(res, "login");
@@ -172,6 +171,4 @@ app.post("/post/criar",function (req,res){
         res.end();
     }
 });
-
-
 funcoes.iniciar(server,port,app);

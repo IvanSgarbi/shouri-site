@@ -11,23 +11,25 @@ module.exports = {
     lista_categorias: null,
     //INICIAR SERVIDOR -------------------------------------------
     iniciar: function (server, port, app) {
-
         var funcoes = this;
         function iniciar_configuracoes() {
-            fs.readFile(path.join(diretorio + "/dados/config.json"), function (erro, configs) {
-                if (erro) {
-                    log("Erro ao ler arquivo de configurações: " + erro, "vermelho");
-                    res.status = 500;
-                    res.write("Erro interno do servidor");
-                    res.end();
-                } else {
-                    configs = JSON.parse(configs);
-                    funcoes.config = configs;
-                    log("Sucesso ao inicializar configs!", "verde");
-                    log(JSON.stringify(funcoes.config) ,"azul");
-                    iniciar_sessoes();
+            fs.readFile(
+                path.join(diretorio + "/dados/config.json"),
+                function (erro, configs) {
+                    if (erro) {
+                        log("Erro ao ler arquivo de configurações: " + erro, "vermelho");
+                        res.status = 500;
+                        res.write("Erro interno do servidor");
+                        res.end();
+                    } else {
+                        configs = JSON.parse(configs);
+                        funcoes.config = configs;
+                        log("Sucesso ao inicializar configs!", "verde");
+                        log(JSON.stringify(funcoes.config), "azul");
+                        iniciar_sessoes();
+                    }
                 }
-            });
+            );
         }
         function iniciar_sessoes() {
             log("Iniciando sessões...", "amarelo");
@@ -41,15 +43,47 @@ module.exports = {
                     arquivo = JSON.parse(arquivo);
                     funcoes.sessoes = arquivo;
                     log("Sucesso ao inicializar sessoes!", "verde");
-                    log(JSON.stringify(funcoes.sessoes),"azul");
-                    server = app.listen(port);
-                    server.timeout = 3000;
-                    log("INICIANDO SERVIDOR...........", "verde");
+                    log(JSON.stringify(funcoes.sessoes), "azul");
+                    iniciar_mapeamento_categorias();
                 }
             });
         }
+        function iniciar_mapeamento_categorias() {
+            log("Iniciando categorias...", "amarelo");
+            fs.readFile(
+                path.join(diretorio + "/dados/posts/mapa-categorias.json"),
+                function (erro, mapa) {
+                    if (erro) {
+                        log("Erro ao ler arquivo de mapeamento de posts", "vermelho");
+                        return;
+                    } else {
+                        mapa = JSON.parse(mapa);
+                        funcoes.categorias = mapa;
+                        iniciar_mapeamento_ids();
+                    }
+                }
+            );
+        }
+        function iniciar_mapeamento_ids() {
+            log("Iniciando IDs...", "amarelo");
+            fs.readFile(
+                path.join(diretorio + "/dados/posts/mapa-id.json"),
+                function (erro, ids) {
+                    if (erro) {
+                        log("Erro ao ler arquivo de mapeamento de posts", "vermelho");
+                        return;
+                    } else {
+                        ids = JSON.parse(ids);
+                        funcoes.ids = ids;
+                        server = app.listen(port);
+                        server.timeout = 3000;
+                        log(funcoes.ids);
+                        log("INICIANDO SERVIDOR...........", "verde");
+                    }
+                }
+            );
+        }
         iniciar_configuracoes();
-
     },
     //ATUALIZAR SESSOES -----------------------------------------------
     atualizar_sessoes: function () {
@@ -99,7 +133,43 @@ module.exports = {
             }
         });
     },
-    //ENVIAR ARQUIVOS NECESSÁRIOS DA PÁGINA----------------------------
+    //ATUALIZAR MAPEAMENTO DE ID --------------------------------------
+    atualizar_mapeamento_id: function () {
+        var funcoes = this;
+        log("Atualizando IDs...", "amarelo");
+        fs.readFile(
+            path.join(diretorio + "/dados/posts/mapa-id.json"),
+            function (erro, ids) {
+                if (erro) {
+                    log("Erro ao ler arquivo de mapeamento de posts", "vermelho");
+                    return;
+                } else {
+                    ids = JSON.parse(ids);
+                    funcoes.ids = ids;
+                    log("IDs Atualizados", "verde");
+                }
+            }
+        );
+    },
+    //ATUALIZAR MAPEAMENTO DE CATEGORIAS ------------------------------
+    atualizar_mapeamento_categorias: function () {
+        var funcoes = this;
+        log("Iniciando categorias...", "amarelo");
+        fs.readFile(
+            path.join(diretorio + "/dados/posts/mapa-categorias.json"),
+            function (erro, mapa) {
+                if (erro) {
+                    log("Erro ao ler arquivo de mapeamento de posts", "vermelho");
+                    return;
+                } else {
+                    mapa = JSON.parse(mapa);
+                    funcoes.categorias = mapa;
+                    log("Categorias atualizadas com sucesso!", "verde");
+                }
+            }
+        );
+    },
+    //ENVIAR ARQUIVOS NECESSÁRIOS DA PÁGINA ---------------------------
     enviar_arquivo: function (req, res) {
         var funcoes = this;
         var nome_arquivo = req._parsedUrl.path.split("/");
@@ -131,13 +201,12 @@ module.exports = {
             res.write("Erro ao enviar arquivo: Tipo de arquivo inválido! " + tipo);
             res.end();
         }
-
     },
-    //CHECAR TOKEN-----------------------------------------------------
+    //CHECAR TOKEN ----------------------------------------------------
     checar_token: function (user) {
         var retorno;
         var funcoes = this;
-        log("lendo dados de forma sincrona", "amarelo");
+        log("lendo dados da variável de sessoes", "amarelo");
         if (funcoes.sessoes[user.id]) {
             if (funcoes.sessoes[user.id].token == user.token) {
                 log("token encontrado! Autorizando acesso", "verde");
@@ -152,7 +221,7 @@ module.exports = {
         }
         return retorno;
     },
-    //ENVIAR DADOS DE USUARIOS ADMIN-----------------------------------
+    //ENVIAR DADOS DE USUARIOS ADMIN ----------------------------------
     solicitar_usuarios: function (usuario, res) {
         log("Cheacando ADMIN do usuário " + usuario.id, "amarelo");
         var cont;
@@ -183,7 +252,7 @@ module.exports = {
             }
         })
     },
-    //SOLICITAR TOKEN--------------------------------------------------    
+    //SOLICITAR TOKEN--------------------------------------------------
     solicitar_token: function (res, pagina) {
         var requisitar_token = "";
         fs.readFile(path.join(diretorio + "/paginas/requisitar_token.html"), function (erro, dados) {
@@ -229,7 +298,6 @@ module.exports = {
     //GERAR TOKEN -----------------------------------------------------
     gerarToken: function () {
         var random;
-        var token;
         var cont;
         random = Math.floor(Math.random() * 1000 + 1);
         var token = random;
@@ -258,7 +326,6 @@ module.exports = {
                 res.end();
             }
         });
-
     },
     //ENVIAR AS SESSÕES -----------------------------------------------
     solicitar_sessoes: function (res) {
@@ -315,61 +382,38 @@ module.exports = {
         var funcoes = this;
         log("Iniciando envio de post", "amarelo");
         var post;
-        fs.readFile(
-            path.join(diretorio + "/dados/posts/mapa-id.json"),
-            function (erro, mapa) {
-                if (erro) {
-                    log("Erro ao ler arquivo de mapeamento de posts", "vermelho");
-                    res.status = 500;
-                    res.write("Erro ao ler arquivo de índices");
-                    res.end();
-                    return;
+        var mapa = funcoes.ids;
+        if (mapa[id]) {
+            log("Arquivo do post encontrado: " + mapa[id], "verde");
+            fs.readFile(
+                path.join(diretorio + "/dados/posts/" + mapa[id]),
+                function (erro, posts) {
+                    if (erro) {
+                        log("Erro ao ler arquivo do post", "vermelho");
+                        res.status = 500;
+                        res.write("Erro ao ler arquivo do Post");
+                        res.end();
+                        return;
+                    }
+                    log("Sucesso na leitura do arquivo do Post", "verde");
+                    posts = JSON.parse(posts);
+                    post = posts[id];
+                    funcoes.enviar_post(res, post)
                 }
-                log("Arquivo de mapeamento lido com sucesso", "verde");
-                mapa = JSON.parse(mapa);
-                if (mapa[id]) {
-                    log("Arquivo do post encontrado", "verde");
-                    fs.readFile(
-                        path.join(diretorio + "/dados/posts/" + mapa[id]),
-                        function (erro, posts) {
-                            if (erro) {
-                                log("Erro ao ler arquivo do posts", "vermelho");
-                                res.status = 500;
-                                res.write("Erro ao ler arquivo do Post");
-                                res.end();
-                                return;
-                            }
-                            log("Sucesso na leitura do arquivo do Post", "verde");
-                            posts = JSON.parse(posts);
-                            post = posts[id];
-                            funcoes.enviar_post(res, post)
-                        }
-                    );
-                } else {
-                    log("Post não encontrado", "vermelho");
-                    res.sendFile(path.join(diretorio + "/paginas/404.html"));
-                    return;
-                }
-            });
+            );
+        } else {
+            log("Post não encontrado", "vermelho");
+            res.sendFile(path.join(diretorio + "/paginas/404.html"));
+            return;
+        }
+
     },
     //LISTAR AS CATEGORIAS ---------------------------------------------------------------------
     listar_categorias: function (res) {
-        var categorias;
-        fs.readFile(
-            path.join(diretorio + "/dados/posts/mapa-categorias.json"),
-            function (erro, mapa) {
-                if (erro) {
-                    log("Erro ao ler arquivo de mapeamento de posts", "vermelho");
-                    res.status = 500;
-                    res.write("Erro ao ler arquivo de índices");
-                    res.end();
-                    return;
-                }
-                mapa = JSON.parse(mapa);
-                categorias = Object.keys(mapa);
-                res.send(categorias);
-                res.end();
-            });
+        var funcoes = this;
+        var categorias = Object.keys(funcoes.categorias);
+        res.send(categorias);
+        res.end();
     },
     //LOCALIZAR POSTS DE CATEGORIA -------------------------------------------------------------
     posts_cat: function (cat, res) {
@@ -379,30 +423,19 @@ module.exports = {
         var cont;
         if (cat) {
             log("Encontrando a categoria: " + cat, "amarelo");
-            fs.readFile(
-                path.join(diretorio + "/dados/posts/mapa-categorias.json"),
-                function (erro, mapa) {
-                    if (erro) {
-                        log("Erro ao ler arquivo de mapeamento de posts", "vermelho");
-                        res.status = 500;
-                        res.write("Erro ao ler arquivo de índices");
-                        res.end();
-                        return;
-                    }
-                    mapa = JSON.parse(mapa);
-                    if (mapa[cat]) {
-                        log("categoria encontrada no mapa", "verde");
-                        for (cont = 0; cont < mapa[cat].length; cont++) {
-                            arquivos.push(mapa[cat][cont].arquivo);
-                            posts[mapa[cat][cont].arquivo] = mapa[cat][cont].id;
-                        }
-                        funcoes.criar_lista_posts(arquivos, posts, res);
-                    } else {
-                        log("Categoria não encontrada", "vermelho");
-                        res.sendFile(path.join(diretorio + "/paginas/404.html"));
-                        return;
-                    }
-                });
+            var mapa = funcoes.categorias
+            if (mapa[cat]) {
+                log("categoria encontrada no mapa", "verde");
+                for (cont = 0; cont < mapa[cat].length; cont++) {
+                    arquivos.push(mapa[cat][cont].arquivo);
+                    posts[mapa[cat][cont].arquivo] = mapa[cat][cont].id;
+                }
+                funcoes.criar_lista_posts(arquivos, posts, res);
+            } else {
+                log("Categoria não encontrada", "vermelho");
+                res.sendFile(path.join(diretorio + "/paginas/404.html"));
+                return;
+            }
         } else {
             log("Categoria não especificada", "vermelho");
             res.sendFile(path.join(diretorio + "/paginas/404.html"));
@@ -431,7 +464,7 @@ module.exports = {
                         res.write("Erro ao ler arquivo do Post");
                         res.end();
                         return;
-                    };
+                    }
                     log("lendo o arquivo: /dados/posts/" + arquivo_atual, "verde");
                     arquivo_post = JSON.parse(arquivo_post);
                     for (cont_post = 0; cont_post < posts[arquivo_atual].length; cont_post++) {
@@ -448,7 +481,8 @@ module.exports = {
                         log("Enviando lista de posts: ", "verde");
                         funcoes.ordenar_posts(lista_posts, res);
                     }
-                });
+                }
+            );
         }
     },
     //ORDENAR POSTS -------------------------------------------------------------------------
@@ -457,7 +491,7 @@ module.exports = {
         lista_posts.sort(function (a, b) {
             if (a.data < b.data) {
                 return -1;
-            } else if (a.data < b.data) {
+            } else if (a.data > b.data) {
                 return 1;
             } else {
                 return 0;
@@ -553,10 +587,11 @@ module.exports = {
                         titulo: post.titulo,
                         data: new Date().toLocaleString()
                     }
-                    gravar_post();
+                    gravar_post(posts);
                 }
-            });
-        function gravar_post() {
+            }
+        );
+        function gravar_post(posts) {
             log("iniciando gravação do post no arquivo de postagens", "amarelo");
             fs.writeFile(
                 path.join(diretorio + "/dados/posts/" + arquivo + ".json"),
@@ -610,23 +645,10 @@ module.exports = {
     mapear_postagem: function (id, arquivo, categorias, res) {
         log("Iniciando mapeamento de ID e de categorias da postagem", "amarelo");
         var funcoes = this;
-        fs.readFile(
-            path.join(diretorio + "/dados/posts/mapa-id.json"),
-            function (erro, ids) {
-                if (erro) {
-                    log("Erro ao ler arquivo de mapeamento por IDs", "vermelho");
-                    res.status(500);
-                    res.write("Erro interno do servidor");
-                    res.end();
-                    return;
-                } else {
-                    log("Sucesso na leitura do arquivo de mapeamento por IDs", "verde");
-                    ids = JSON.parse(ids);
-                    ids[id] = arquivo + ".json";
-                    gravar_id(ids);
-                }
-            }
-        );
+        log("Sucesso na leitura do arquivo de mapeamento por IDs", "verde");
+        ids = funcoes.ids;
+        ids[id] = arquivo + ".json";
+        gravar_id(ids);
         function gravar_id(ids) {
             log("Iniciando Gravação do arquivo de mapeamento por IDs", "amarelo");
             fs.writeFile(
@@ -641,6 +663,7 @@ module.exports = {
                         return;
                     } else {
                         log("Sucesso ao Gravar o arquivo de mapeamento por IDs", "verde");
+                        funcoes.atualizar_mapeamento_id();
                         ler_categorias();
                     }
                 }
@@ -650,54 +673,41 @@ module.exports = {
             var cont, cont2;
             var arquivo_encontrado = false;
             log("Iniciando leitura do arquivo de mapeamento por categorias", "amarelo");
-            fs.readFile(
-                path.join(diretorio + "/dados/posts/mapa-categorias.json"),
-                function (erro, arquivo_categorias) {
-                    if (erro) {
-                        log("Erro ao ler arquivo de mapeamento por categorias", "vermelho");
-                        res.status(500);
-                        res.write("Erro interno do servidor");
-                        res.end();
-                        return;
-                    } else {
-                        log("Sucesso ao ler arquivo de mapeamento por categorias", "verde");
-                        arquivo_categorias = JSON.parse(arquivo_categorias);
-                        log("Array de categorias:", "azul");
-                        log(categorias);
-                        //laço para cada uma das categorias da postagem
-                        for (cont = 0; cont < categorias.length; cont++) {
-                            if (arquivo_categorias[categorias[cont]]) {
-                                log("Categoria " + categorias[cont] + " encontrada no arquivo de categorias", "amarelo");
-                                //laço para cada arquivo gravado na categoria
-                                arquivo_encontrado = false;
-                                for (cont2 = 0; cont2 < arquivo_categorias[categorias[cont]].length; cont2++) {
-                                    if (arquivo_categorias[categorias[cont]][cont2].arquivo == arquivo + ".json") {
-                                        log("arquivo " + arquivo + ".json encontrado dentro do mapeamento da categoria: " +
-                                            categorias[cont], "amarelo");
-                                        arquivo_categorias[categorias[cont]][cont2].id.push(id);
-                                        arquivo_encontrado = true;
-                                        break;
-                                    }
-                                }
-                                if (!arquivo_encontrado) {
-                                    log("arquivo " + arquivo + ".json não encontrado dentro do mapeamento da categoria: " +
-                                        categorias[cont], "amarelo");
-                                    arquivo_categorias[categorias[cont]].push({
-                                        arquivo: arquivo + ".json",
-                                        id: [id]
-                                    });
-                                }
-                            } else {
-                                log("Categoria " + categorias[cont] + " NÃO encontrada no arquivo de categorias");
-                                arquivo_categorias[categorias[cont]] = [{
-                                    arquivo: arquivo + ".json",
-                                    id: [id]
-                                }];
-                            }
+            var arquivo_categorias = funcoes.categorias;
+            log("Array de categorias:", "azul");
+            log(categorias);
+            //laço para cada uma das categorias da postagem
+            for (cont = 0; cont < categorias.length; cont++) {
+                if (arquivo_categorias[categorias[cont]]) {
+                    log("Categoria " + categorias[cont] + " encontrada no arquivo de categorias", "amarelo");
+                    //laço para cada arquivo gravado na categoria
+                    arquivo_encontrado = false;
+                    for (cont2 = 0; cont2 < arquivo_categorias[categorias[cont]].length; cont2++) {
+                        if (arquivo_categorias[categorias[cont]][cont2].arquivo == arquivo + ".json") {
+                            log("arquivo " + arquivo + ".json encontrado dentro do mapeamento da categorias: " +
+                                categorias[cont], "amarelo");
+                            arquivo_categorias[categorias[cont]][cont2].id.push(id);
+                            arquivo_encontrado = true;
+                            break;
                         }
-                        salvar_categorias(arquivo_categorias);
                     }
-                });
+                    if (!arquivo_encontrado) {
+                        log("arquivo " + arquivo + ".json não encontrado dentro do mapeamento da categoria: " +
+                            categorias[cont], "amarelo");
+                        arquivo_categorias[categorias[cont]].push({
+                            arquivo: arquivo + ".json",
+                            id: [id]
+                        });
+                    }
+                } else {
+                    log("Categoria " + categorias[cont] + " NÃO encontrada no arquivo de categorias");
+                    arquivo_categorias[categorias[cont]] = [{
+                        arquivo: arquivo + ".json",
+                        id: [id]
+                    }];
+                }
+            }
+            salvar_categorias(arquivo_categorias);
         }
         function salvar_categorias(arquivo_categorias) {
             log("Iniciando gravação no arquivo de categorias", "amarelo");
@@ -714,7 +724,13 @@ module.exports = {
                     } else {
                         log("Sucesso ao Gravar o arquivo de mapeamento por Categorias", "verde");
                         funcoes.salvar_config();
-                        res.write("Postagem criada com sucesso. Acesse em /post/" + id)
+                        funcoes.atualizar_mapeamento_categorias();
+                        res.send(
+                            {
+                                mensagem: "Postagem criada com sucesso.",
+                                link: "/post/" + id
+                            }
+                        );
                         res.end();
                     }
                 }

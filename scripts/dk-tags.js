@@ -74,7 +74,6 @@ var dk = {
                             }
                         }
                         break;
-
                     default:
                 }
             }

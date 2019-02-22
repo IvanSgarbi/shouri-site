@@ -15,7 +15,7 @@ document.getElementById("carregar-sessoes").onclick = function (evento) {
         if (this.response && this.readyState == 4 && this.status == 200) {
             sessoes = JSON.parse(this.response);
             preencherTabela(sessoes);
-        }else{
+        } else {
             console.log(this.responseText);
             document.getElementsByClassName("dados")[0].innerText = "";
         }
@@ -35,7 +35,7 @@ document.getElementById("carregar-usuarios").onclick = function (evento) {
     conexao.onreadystatechange = function () {
         if (this.response && this.readyState == 4 && this.status == 200) {
             document.getElementById("paragrafo-usuarios").innerText = this.responseText;
-        }else{
+        } else {
             console.log(this.responseText);
             document.getElementById("paragrafo-usuarios").innerText = "";
         }
@@ -59,8 +59,28 @@ document.onclick = function (evento) {
         conexao.onreadystatechange = function () {
             if (this.response && this.readyState == 4 && this.status == 200) {
                 document.getElementById("info-sessoes").innerText = this.responseText;
-            }else{
+            } else {
                 document.getElementById("info-sessoes").innerText = "";
+            }
+        }
+    } else if (evento.target == document.getElementById("carregar-categorias")) {
+        console.log("foi o certo")
+        var conexao = new XMLHttpRequest();
+        conexao.open("GET", "categorias", true);
+        conexao.send();
+        conexao.onreadystatechange = function () {
+            if (this.response && this.readyState == 4 && this.status == 200) {
+                categorias = this.responseText;
+                categorias = JSON.parse(categorias);
+                console.log(categorias);
+                var tabela = document.getElementById("categorias").children[0];
+                for (var cont = 0; cont < categorias.length; cont++) {
+                    tabela.innerHTML = tabela.innerHTML + "<tr>" +
+                        "<td><a href='posts/+"+categorias[cont]+"'>"+categorias[cont]+"</a></td>" +
+                        "<td><button id='"+categorias[cont]+"' class='apagar_categoria'>Apagar</button></td>" +
+                        "</tr>"
+                }
+                //tabela.innerHTML = tabela.innerHTML.replace(/<tbody>|<\/tbody>/g, "");
             }
         }
     }
@@ -77,7 +97,7 @@ function preencherTabela(sessoes) {
         botao.setAttribute("sessao", nome);
         td = document.createElement("td");
         td.width = 100;
-        td.append(botao);
+        td.appendChild(botao);
         tr[0] = td;
         td = document.createElement("td");
         td.width = 100;
@@ -96,5 +116,4 @@ function preencherTabela(sessoes) {
             tr[0], tr[1], tr[2], tr[3]
         );
     }
-
 }

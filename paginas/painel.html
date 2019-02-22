@@ -10,7 +10,7 @@
             text-align: center;
             margin: 0;
         }
-        .tabela-sessoes{
+        .tabela {
             margin: auto;
             display: block;
             width: 600px;
@@ -18,22 +18,31 @@
             border-radius: 5px;
             background: #CCCCCC;
         }
-        table tr td{
+        .tabela > tbody{
+            display: block;
+            width: 100%;
+        }
+        .tabela tr{
+            width: 100%;
+            border: black solid 1px;
+        }
+        .tabela td{
+            width: 50%;
+        }
+        table tr td {
             text-align: center;
             vertical-align: middle;
         }
     </style>
     <link rel="icon" href="img/favicon.png" type="image/png">
 </head>
-
 <body>
-
     <p>VOCÊ ESTÁ NA ÁREA RESTRITA!</p>
     <br>
     <br>
     <button id="carregar-sessoes">Requisitar sessões</button>
     <br><br>
-    <table class="tabela-sessoes">
+    <table class="tabela">
         <tr>
             <td colspan="3">Sessões Ativas</td>
         </tr>
@@ -51,8 +60,22 @@
     <button id="carregar-usuarios">Requisitar Usuários</button>
     <p id="paragrafo-usuarios"></p>
     <br>
+    <p>Gerenciamento de categorias</p>
+    <button id="carregar-categorias">Carregar</button>
+    <br>
+    <table class="tabela" id="categorias">
+        <tbody id="teste">
+            <tr>
+                <td>Categoria</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <input type="text"><button id="adicionar-categoria">Adicionar</button>
+    <br>
     <a href="/postar"><button>Postar</button></a>
-
+    <br>
     <script src="scripts/painel.js"></script>
 </body>
 </html>
