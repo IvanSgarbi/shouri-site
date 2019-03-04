@@ -133,7 +133,6 @@ app.post("/usuarios/consultar", function (req, res) {
     log("Permissão lida: " + permissao, "amarelo");
     if (permissao == "permitido") {
         funcoes.solicitar_usuarios(user, res);
-
     } else {
         res.status(401);
         res.write("ERRO: Usuario não autenticado", "vermelho");
@@ -172,7 +171,7 @@ app.post("/post/criar", function (req, res) {
     }
 });
 //APAGAR CATEGORIA --------------------------------------------------
-app.post("/categoria/:cat",
+app.post("/categoria/apagar/:cat",
     function (req, res) {
         var categoria = req.params.cat;
         var user = req.body;
@@ -184,11 +183,30 @@ app.post("/categoria/:cat",
             //AQUI -------------------------------
             res.write("A categoria " + categoria + " será deletada");
             res.end();
-        }else{
+        } else {
             res.status = 401;
             res.write("Acesso negado");
             res.end();
         }
     }
 );
+//CRIAR CATEGORIA --------------------------------------------------
+app.post("/categoria/criar/:cat",
+    function (req, res) {
+        var categoria = req.params.cat;
+        var user = req.body;
+        log(user);
+        var permissao = funcoes.checar_token(user);
+        log("Permissão lida: " + permissao, "amarelo");
+        if (permissao == "permitido") {
+            log("A categoria " + categoria + " será criada");
+            funcoes.criar_categoria(categoria, res);
+        } else {
+            res.status = 401;
+            res.write("Acesso negado");
+            res.end();
+        }
+    }
+);
+log("Iniciando servidor na porta: " + port);
 funcoes.iniciar(server, port, app);

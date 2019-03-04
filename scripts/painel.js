@@ -89,6 +89,9 @@ document.onclick = function (evento) {
             "'? Todas as referencias serão apagadas das postagens e esse processo não possui volta.")) {
             apagar_categoria(id);
         }
+    } else if (evento.target.getAttribute("id") == "adicionar-categoria") {
+        var nova_categoria = document.getElementById("nova-categoria").value;
+        adicionar_categoria(nova_categoria);
     }
 }
 function preencher_tabela(sessoes) {
@@ -129,7 +132,7 @@ function apagar_categoria(id) {
         "token": localStorage.getItem("shouri-token")
     }
     var conexao = new XMLHttpRequest();
-    conexao.open("POST", "categoria/" + id, true);
+    conexao.open("POST", "categoria/apagar/" + id, true);
     conexao.setRequestHeader("content-type", "application/json");
     conexao.send(JSON.stringify(credenciais));
     conexao.onreadystatechange = function () {
@@ -138,4 +141,23 @@ function apagar_categoria(id) {
         }
     }
     console.log("teste" + id);
+}
+function adicionar_categoria(categoria) {
+    if (categoria) {
+        var credenciais = {
+            "id": localStorage.getItem("shouri-user"),
+            "token": localStorage.getItem("shouri-token")
+        }
+        var conexao = new XMLHttpRequest();
+        conexao.open("POST", "categoria/criar/" + categoria, true);
+        conexao.setRequestHeader("content-type", "application/json");
+        conexao.send(JSON.stringify(credenciais));
+        conexao.onreadystatechange = function () {
+            if (this.response && this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+            }
+        }
+    } else {
+        alert("preencha o campo de caegoria");
+    }
 }

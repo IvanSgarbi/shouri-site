@@ -169,6 +169,22 @@ module.exports = {
             }
         );
     },
+    //SALVAR CATEGORIAS -----------------------------------------------
+    salvar_mapeamento_categorias: function () {
+        var funcoes = this;
+        fs.writeFile(
+            path.join(diretorio + "/dados/posts/mapa-categorias.json"),
+            JSON.stringify(funcoes.categorias),
+            function (erro) {
+                if (erro) {
+                    log("erro na gravação do arquivo de CATEGORIAS!", "vermelho");
+                    log(erro);
+                } else {
+                    log("Sucesso na gravação das CATEGORIAS, atualizando...", "verde");
+                }
+            }
+        );
+    },
     //ENVIAR ARQUIVOS NECESSÁRIOS DA PÁGINA ---------------------------
     enviar_arquivo: function (req, res) {
         var funcoes = this;
@@ -406,7 +422,6 @@ module.exports = {
             res.sendFile(path.join(diretorio + "/paginas/404.html"));
             return;
         }
-
     },
     //LISTAR AS CATEGORIAS ---------------------------------------------------------------------
     listar_categorias: function (res) {
@@ -555,7 +570,6 @@ module.exports = {
             arquivo_gravar = config.ultimo_arquivo;
             log("O post será gravado no arquivo existente: " + arquivo_gravar + ".json", "amarelo");
             funcoes.gravar_post_arquivo_existe(arquivo_gravar, post, res);
-
         } else {
             arquivo_gravar = (config.ultimo_arquivo + 1);
             log("O post será gravado em um novo arquivo: " + arquivo_gravar + ".json", "amarelo");
@@ -735,6 +749,20 @@ module.exports = {
                     }
                 }
             );
+        }
+    },
+    criar_categoria: function (categoria, res) {
+        var funcoes = this;
+        log("A categoria: " + categoria + " será criada");
+        if (!funcoes.categorias[categoria]) {
+            funcoes.categorias[categoria] = [];
+            funcoes.salvar_mapeamento_categorias();
+            res.write("A categoria " + categoria + " será criada");
+            res.end();
+        } else {
+            log("CATEGORIA EXISTENTE, operação cancelada", "vermelho");
+            res.write("categoria existente");
+            res.end();
         }
     }
 }
