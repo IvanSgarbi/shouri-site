@@ -210,3 +210,6 @@ app.post("/categoria/criar/:cat",
 );
 log("Iniciando servidor na porta: " + port);
 funcoes.iniciar(server, port, app);
+setInterval(function(){
+    funcoes.verificar_sessoes();
+},60000);

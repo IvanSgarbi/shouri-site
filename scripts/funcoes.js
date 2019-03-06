@@ -102,6 +102,35 @@ module.exports = {
             }
         });
     },
+    //VERIFICAR SESSÕES -----------------------------------------------
+    verificar_sessoes: function () {
+        var agora = new Date().getTime();
+        var funcoes = this;
+        var user;
+        var sessao_deletada = false;
+        log("Verificando sessões", "amarelo");
+        for (user in funcoes.sessoes) {
+            if (funcoes.sessoes[user].vida < agora) {
+                log("Sessão do usuário "+user+ "expirou e será removida");
+                delete funcoes.sessoes[user];
+                sessao_deletada = true;
+            }
+        }
+        if(sessao_deletada){
+            funcoes.gravar_sessoes();
+        }
+    },
+    //GRAVAR SESSOES --------------------------------------------------
+    gravar_sessoes: function () {
+        var funcoes = this;
+        fs.writeFile(path.join(diretorio + "/dados/sessoes.json"), JSON.stringify(funcoes.sessoes), function (erro) {
+            if (erro) {
+                log("Erro ao Gravar arquivo de sessões", "vermelho");
+            } else {
+                log("Sucesso ao gravar arquivo de sessões", "verde");
+            }
+        });
+    },
     //SALVAR CONFIGURAÇÕES --------------------------------------------
     salvar_config: function () {
         var funcoes = this;
