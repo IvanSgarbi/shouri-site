@@ -111,12 +111,12 @@ module.exports = {
         log("Verificando sessões", "amarelo");
         for (user in funcoes.sessoes) {
             if (funcoes.sessoes[user].vida < agora) {
-                log("Sessão do usuário "+user+ "expirou e será removida");
+                log("Sessão do usuário " + user + "expirou e será removida");
                 delete funcoes.sessoes[user];
                 sessao_deletada = true;
             }
         }
-        if(sessao_deletada){
+        if (sessao_deletada) {
             funcoes.gravar_sessoes();
         }
     },
@@ -594,15 +594,23 @@ module.exports = {
         var funcoes = this;
         var config = this.config.posts;
         log(post);
-        var arquivo_gravar;
-        if (config.posts_por_arquivo > config.posts_ultimo_arquivo) {
-            arquivo_gravar = config.ultimo_arquivo;
-            log("O post será gravado no arquivo existente: " + arquivo_gravar + ".json", "amarelo");
-            funcoes.gravar_post_arquivo_existe(arquivo_gravar, post, res);
+        //verificando se o post já existe
+        if (!post.id || funcoes.ids[post.id]) {
+            log("Post de ID " + post.id + " já existe. Criação cancelada!");
+            res.status(400);
+            res.write("Bad request");
+            res.end();
         } else {
-            arquivo_gravar = (config.ultimo_arquivo + 1);
-            log("O post será gravado em um novo arquivo: " + arquivo_gravar + ".json", "amarelo");
-            funcoes.gravar_post_novo_arquivo(arquivo_gravar, post, res);
+            var arquivo_gravar;
+            if (config.posts_por_arquivo > config.posts_ultimo_arquivo) {
+                arquivo_gravar = config.ultimo_arquivo;
+                log("O post será gravado no arquivo existente: " + arquivo_gravar + ".json", "amarelo");
+                funcoes.gravar_post_arquivo_existe(arquivo_gravar, post, res);
+            } else {
+                arquivo_gravar = (config.ultimo_arquivo + 1);
+                log("O post será gravado em um novo arquivo: " + arquivo_gravar + ".json", "amarelo");
+                funcoes.gravar_post_novo_arquivo(arquivo_gravar, post, res);
+            }
         }
     },
     //GRAVAR EM ARQUIVO EXISTENTE ----------------------------------------------------------
@@ -689,7 +697,7 @@ module.exports = {
         log("Iniciando mapeamento de ID e de categorias da postagem", "amarelo");
         var funcoes = this;
         log("Sucesso na leitura do arquivo de mapeamento por IDs", "verde");
-        ids = funcoes.ids;
+        var ids = funcoes.ids;
         ids[id] = arquivo + ".json";
         gravar_id(ids);
         function gravar_id(ids) {
