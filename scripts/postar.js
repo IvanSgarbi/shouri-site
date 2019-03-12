@@ -27,7 +27,6 @@ document.onclick = function (ev) {
                     console.log(this.responseText);
                     var resposta = JSON.parse(this.responseText);
                     window.open(resposta.link);
-
                 } else if (this.status != 200) {
                     document.getElementById("resultado").innerHTML = "Erro";
                 }

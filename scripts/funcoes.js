@@ -592,7 +592,7 @@ module.exports = {
     registrar_post: function (post, res) {
         log("Verificando em qual arquivo gravar o post", "amarelo");
         var funcoes = this;
-        var config = this.config.posts;
+        var config = this.config;
         log(post);
         //verificando se o post já existe
         if (!post.id || funcoes.ids[post.id]) {
@@ -602,12 +602,13 @@ module.exports = {
             res.end();
         } else {
             var arquivo_gravar;
-            if (config.posts_por_arquivo > config.posts_ultimo_arquivo) {
-                arquivo_gravar = config.ultimo_arquivo;
+            if (config.posts.posts_por_arquivo > config.posts.posts_ultimo_arquivo) {
+                arquivo_gravar = config.posts.ultimo_arquivo;
                 log("O post será gravado no arquivo existente: " + arquivo_gravar + ".json", "amarelo");
                 funcoes.gravar_post_arquivo_existe(arquivo_gravar, post, res);
             } else {
-                arquivo_gravar = (config.ultimo_arquivo + 1);
+                config.posts.ultimo_arquivo++
+                arquivo_gravar = config.posts.ultimo_arquivo;
                 log("O post será gravado em um novo arquivo: " + arquivo_gravar + ".json", "amarelo");
                 funcoes.gravar_post_novo_arquivo(arquivo_gravar, post, res);
             }
@@ -617,6 +618,7 @@ module.exports = {
     gravar_post_arquivo_existe: function (arquivo, post, res) {
         var funcoes = this;
         funcoes.config.posts.ultimo_arquivo = arquivo;
+        funcoes.config.posts.posts_ultimo_arquivo++;
         log("iniciando leitura do arquivo de postagens", "amarelo");
         fs.readFile(
             path.join(diretorio + "/dados/posts/" + arquivo + ".json"),
