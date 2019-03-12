@@ -803,5 +803,41 @@ module.exports = {
             res.write("categoria existente");
             res.end();
         }
+    },
+    apagar_categoria: function (categoria, res) {
+        var funcoes = this;
+        if (funcoes.categorias[categoria]) {
+
+            rastrear_referencias(categoria);
+            // res.write("A categoria " + categoria + " será apagada");
+            // res.end();
+        } else {
+            log("CATEGORIA INEXISTENTE, operação cancelada", "vermelho");
+            res.write("categoria inexistente");
+            res.end();
+        }
+        function rastrear_referencias(categoria) {
+            var num_referencias = funcoes.categorias[categoria].length;
+            fila_de_referencias(0, num_referencias, categoria);
+            function fila_de_referencias(posicao, limite, categoria) {
+                var arquivo = funcoes.categorias[categoria][posicao].arquivo;
+                fs.readFile(
+                    path.join(diretorio + "/dados/posts/" + arquivo),
+                    function (erro, posts) {
+                        if (erro) {
+                            log("Erro ao ler arquivo de postagens", "vermelho");
+                            res.status(500);
+                            res.write("Erro interno do servidor");
+                            res.end();
+                            return;
+                        }else{
+                            //AQUI -----------------------------------
+                        }
+                    }
+                )
+            }
+        }
+
+        // funcoes.salvar_mapeamento_categorias();
     }
 }
