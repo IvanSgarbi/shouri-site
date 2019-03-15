@@ -180,9 +180,7 @@ app.post("/categoria/apagar/:cat",
         log("Permissão lida: " + permissao, "amarelo");
         if (permissao == "permitido") {
             log("A categoria " + categoria + " será deletada");
-            //AQUI -------------------------------
-            res.write("A categoria " + categoria + " será deletada");
-            res.end();
+            funcoes.apagar_categoria(categoria,res);
         } else {
             res.status = 401;
             res.write("Acesso negado");

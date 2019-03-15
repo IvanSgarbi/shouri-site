@@ -32,7 +32,7 @@ module.exports = {
             );
         }
         function iniciar_sessoes() {
-            log("Iniciando sessões...", "amarelo");
+            log("Iniciando sessões...");
             fs.readFile(path.join(diretorio + "/dados/sessoes.json"), function (erro, arquivo) {
                 if (erro) {
                     log("Erro ao ler arquivo de sessões: " + erro, "vermelho");
@@ -49,7 +49,7 @@ module.exports = {
             });
         }
         function iniciar_mapeamento_categorias() {
-            log("Iniciando categorias...", "amarelo");
+            log("Iniciando categorias...");
             fs.readFile(
                 path.join(diretorio + "/dados/posts/mapa-categorias.json"),
                 function (erro, mapa) {
@@ -65,7 +65,7 @@ module.exports = {
             );
         }
         function iniciar_mapeamento_ids() {
-            log("Iniciando IDs...", "amarelo");
+            log("Iniciando IDs...");
             fs.readFile(
                 path.join(diretorio + "/dados/posts/mapa-id.json"),
                 function (erro, ids) {
@@ -87,7 +87,7 @@ module.exports = {
     },
     //ATUALIZAR SESSOES -----------------------------------------------
     atualizar_sessoes: function () {
-        log("atualizando sessoes...", "amarelo")
+        log("atualizando sessoes...")
         var funcoes = this;
         fs.readFile(path.join(diretorio + "/dados/sessoes.json"), function (erro, arquivo) {
             if (erro) {
@@ -108,7 +108,7 @@ module.exports = {
         var funcoes = this;
         var user;
         var sessao_deletada = false;
-        log("Verificando sessões", "amarelo");
+        log("Verificando sessões");
         for (user in funcoes.sessoes) {
             if (funcoes.sessoes[user].vida < agora) {
                 log("Sessão do usuário " + user + "expirou e será removida");
@@ -165,7 +165,7 @@ module.exports = {
     //ATUALIZAR MAPEAMENTO DE ID --------------------------------------
     atualizar_mapeamento_id: function () {
         var funcoes = this;
-        log("Atualizando IDs...", "amarelo");
+        log("Atualizando IDs...");
         fs.readFile(
             path.join(diretorio + "/dados/posts/mapa-id.json"),
             function (erro, ids) {
@@ -183,7 +183,7 @@ module.exports = {
     //ATUALIZAR MAPEAMENTO DE CATEGORIAS ------------------------------
     atualizar_mapeamento_categorias: function () {
         var funcoes = this;
-        log("Iniciando categorias...", "amarelo");
+        log("Iniciando categorias...");
         fs.readFile(
             path.join(diretorio + "/dados/posts/mapa-categorias.json"),
             function (erro, mapa) {
@@ -224,9 +224,9 @@ module.exports = {
         var caminho = path.join(diretorio + this.limpar_caminho(req.originalUrl));
         var permitidos = funcoes.config.permissoes_arquivos.permitidos;
         var bloqueados = funcoes.config.permissoes_arquivos.bloqueados;
-        log("enviando um arquivo tipo: " + tipo, "amarelo");
+        log("enviando um arquivo tipo: " + tipo);
         if (permitidos.includes(tipo) && !bloqueados.includes(nome_arquivo)) {
-            log("caminho do arquivo: " + caminho, "amarelo");
+            log("caminho do arquivo: " + caminho);
             fs.readFile(caminho, function (erro, dados) {
                 if (erro) {
                     res.send(erro);
@@ -251,7 +251,7 @@ module.exports = {
     checar_token: function (user) {
         var retorno;
         var funcoes = this;
-        log("lendo dados da variável de sessoes", "amarelo");
+        log("lendo dados da variável de sessoes");
         if (funcoes.sessoes[user.id]) {
             if (funcoes.sessoes[user.id].token == user.token) {
                 log("token encontrado! Autorizando acesso", "verde");
@@ -268,7 +268,7 @@ module.exports = {
     },
     //ENVIAR DADOS DE USUARIOS ADMIN ----------------------------------
     solicitar_usuarios: function (usuario, res) {
-        log("Cheacando ADMIN do usuário " + usuario.id, "amarelo");
+        log("Cheacando ADMIN do usuário " + usuario.id);
         var cont;
         var admin = false;
         var caminho = path.join(diretorio + "/dados/usuarios.json");
@@ -317,7 +317,7 @@ module.exports = {
     },
     //REDIRECIONAR POR URL---------------------------------------------
     redirecionar: function (res, pagina) {
-        log("Redirecionando para " + pagina, "amarelo");
+        log("Redirecionando para " + pagina);
         res.redirect("/" + pagina);
     },
     //VERIFICAR SE PAGINA EXISTE E ENVIAR A PAGINA OU ERRO 404 --------
@@ -355,7 +355,7 @@ module.exports = {
     },
     //SALVAR TOKEN ----------------------------------------------------
     gravar_token: function (id, res, token) {
-        log("gravando token", "amarelo");
+        log("gravando token");
         var funcoes = this;
         var agora = new Date().getTime();
         funcoes.sessoes[id] = {
@@ -375,7 +375,7 @@ module.exports = {
     //ENVIAR AS SESSÕES -----------------------------------------------
     solicitar_sessoes: function (res) {
         var funcoes = this;
-        log("Enviando sessoes", "amarelo");
+        log("Enviando sessoes");
         res.write(JSON.stringify(funcoes.sessoes));
         res.end();
     },
@@ -425,7 +425,7 @@ module.exports = {
     //LOCALIZAR POST POR ID -------------------------------------------
     post_id: function (id, res) {
         var funcoes = this;
-        log("Iniciando envio de post", "amarelo");
+        log("Iniciando envio de post");
         var post;
         var mapa = funcoes.ids;
         if (mapa[id]) {
@@ -466,7 +466,7 @@ module.exports = {
         var posts = {};
         var cont;
         if (cat) {
-            log("Encontrando a categoria: " + cat, "amarelo");
+            log("Encontrando a categoria: " + cat);
             var mapa = funcoes.categorias
             if (mapa[cat]) {
                 log("categoria encontrada no mapa", "verde");
@@ -492,10 +492,10 @@ module.exports = {
         var cont_post;
         var arquivo_atual;
         var lista_posts = [];
-        log("Lendo arquivos para montar a lista.", "amarelo");
-        log("Arquivos: ", "amarelo");
+        log("Lendo arquivos para montar a lista.");
+        log("Arquivos: ");
         log(arquivos);
-        log("posts: ", "amarelo");
+        log("posts: ");
         log(posts);
         loop_ler_arquivos(0, arquivos.length);
         function loop_ler_arquivos(cont, limite) {
@@ -566,7 +566,7 @@ module.exports = {
     },
     //ENVIAR PÁGINA DE POST -----------------------------------------------------------------
     enviar_post: function (res, post) {
-        log("Montando pagina de post", "amarelo");
+        log("Montando pagina de post");
         fs.readFile(
             path.join(diretorio + "/paginas/post.html"),
             function (erro, pagina) {
@@ -590,7 +590,7 @@ module.exports = {
     },
     //REGISTRAR POSTAGEM --------------------------------------------------------------------
     registrar_post: function (post, res) {
-        log("Verificando em qual arquivo gravar o post", "amarelo");
+        log("Verificando em qual arquivo gravar o post");
         var funcoes = this;
         var config = this.config;
         log(post);
@@ -604,12 +604,12 @@ module.exports = {
             var arquivo_gravar;
             if (config.posts.posts_por_arquivo > config.posts.posts_ultimo_arquivo) {
                 arquivo_gravar = config.posts.ultimo_arquivo;
-                log("O post será gravado no arquivo existente: " + arquivo_gravar + ".json", "amarelo");
+                log("O post será gravado no arquivo existente: " + arquivo_gravar + ".json");
                 funcoes.gravar_post_arquivo_existe(arquivo_gravar, post, res);
             } else {
                 config.posts.ultimo_arquivo++
                 arquivo_gravar = config.posts.ultimo_arquivo;
-                log("O post será gravado em um novo arquivo: " + arquivo_gravar + ".json", "amarelo");
+                log("O post será gravado em um novo arquivo: " + arquivo_gravar + ".json");
                 funcoes.gravar_post_novo_arquivo(arquivo_gravar, post, res);
             }
         }
@@ -619,7 +619,7 @@ module.exports = {
         var funcoes = this;
         funcoes.config.posts.ultimo_arquivo = arquivo;
         funcoes.config.posts.posts_ultimo_arquivo++;
-        log("iniciando leitura do arquivo de postagens", "amarelo");
+        log("iniciando leitura do arquivo de postagens");
         fs.readFile(
             path.join(diretorio + "/dados/posts/" + arquivo + ".json"),
             function (erro, posts) {
@@ -645,7 +645,7 @@ module.exports = {
             }
         );
         function gravar_post(posts) {
-            log("iniciando gravação do post no arquivo de postagens", "amarelo");
+            log("iniciando gravação do post no arquivo de postagens");
             fs.writeFile(
                 path.join(diretorio + "/dados/posts/" + arquivo + ".json"),
                 JSON.stringify(posts),
@@ -677,7 +677,7 @@ module.exports = {
             titulo: post.titulo,
             data: new Date().toLocaleString()
         }
-        log("iniciando gravação do novo arquivo de postagens", "amarelo");
+        log("iniciando gravação do novo arquivo de postagens");
         fs.writeFile(
             path.join(diretorio + "/dados/posts/" + arquivo + ".json"),
             JSON.stringify(posts),
@@ -696,14 +696,14 @@ module.exports = {
         );
     },
     mapear_postagem: function (id, arquivo, categorias, res) {
-        log("Iniciando mapeamento de ID e de categorias da postagem", "amarelo");
+        log("Iniciando mapeamento de ID e de categorias da postagem");
         var funcoes = this;
         log("Sucesso na leitura do arquivo de mapeamento por IDs", "verde");
         var ids = funcoes.ids;
         ids[id] = arquivo + ".json";
         gravar_id(ids);
         function gravar_id(ids) {
-            log("Iniciando Gravação do arquivo de mapeamento por IDs", "amarelo");
+            log("Iniciando Gravação do arquivo de mapeamento por IDs");
             fs.writeFile(
                 path.join(diretorio + "/dados/posts/mapa-id.json"),
                 JSON.stringify(ids),
@@ -725,20 +725,20 @@ module.exports = {
         function ler_categorias() {
             var cont, cont2;
             var arquivo_encontrado = false;
-            log("Iniciando leitura do arquivo de mapeamento por categorias", "amarelo");
+            log("Iniciando leitura do arquivo de mapeamento por categorias");
             var arquivo_categorias = funcoes.categorias;
             log("Array de categorias:", "azul");
             log(categorias);
             //laço para cada uma das categorias da postagem
             for (cont = 0; cont < categorias.length; cont++) {
                 if (arquivo_categorias[categorias[cont]]) {
-                    log("Categoria " + categorias[cont] + " encontrada no arquivo de categorias", "amarelo");
+                    log("Categoria " + categorias[cont] + " encontrada no arquivo de categorias");
                     //laço para cada arquivo gravado na categoria
                     arquivo_encontrado = false;
                     for (cont2 = 0; cont2 < arquivo_categorias[categorias[cont]].length; cont2++) {
                         if (arquivo_categorias[categorias[cont]][cont2].arquivo == arquivo + ".json") {
                             log("arquivo " + arquivo + ".json encontrado dentro do mapeamento da categorias: " +
-                                categorias[cont], "amarelo");
+                                categorias[cont]);
                             arquivo_categorias[categorias[cont]][cont2].id.push(id);
                             arquivo_encontrado = true;
                             break;
@@ -746,7 +746,7 @@ module.exports = {
                     }
                     if (!arquivo_encontrado) {
                         log("arquivo " + arquivo + ".json não encontrado dentro do mapeamento da categoria: " +
-                            categorias[cont], "amarelo");
+                            categorias[cont]);
                         arquivo_categorias[categorias[cont]].push({
                             arquivo: arquivo + ".json",
                             id: [id]
@@ -763,7 +763,7 @@ module.exports = {
             salvar_categorias(arquivo_categorias);
         }
         function salvar_categorias(arquivo_categorias) {
-            log("Iniciando gravação no arquivo de categorias", "amarelo");
+            log("Iniciando gravação no arquivo de categorias");
             fs.writeFile(
                 path.join(diretorio + "/dados/posts/mapa-categorias.json"),
                 JSON.stringify(arquivo_categorias),
@@ -807,37 +807,93 @@ module.exports = {
     apagar_categoria: function (categoria, res) {
         var funcoes = this;
         if (funcoes.categorias[categoria]) {
-
             rastrear_referencias(categoria);
-            // res.write("A categoria " + categoria + " será apagada");
-            // res.end();
         } else {
             log("CATEGORIA INEXISTENTE, operação cancelada", "vermelho");
             res.write("categoria inexistente");
             res.end();
         }
         function rastrear_referencias(categoria) {
-            var num_referencias = funcoes.categorias[categoria].length;
-            fila_de_referencias(0, num_referencias, categoria);
-            function fila_de_referencias(posicao, limite, categoria) {
-                var arquivo = funcoes.categorias[categoria][posicao].arquivo;
-                fs.readFile(
-                    path.join(diretorio + "/dados/posts/" + arquivo),
-                    function (erro, posts) {
-                        if (erro) {
-                            log("Erro ao ler arquivo de postagens", "vermelho");
-                            res.status(500);
-                            res.write("Erro interno do servidor");
-                            res.end();
-                            return;
-                        }else{
-                            //AQUI -----------------------------------
-                        }
-                    }
-                )
+            if (funcoes.categorias[categoria]) {
+                if (funcoes.categorias[categoria].length > 0) {
+                    var num_referencias = funcoes.categorias[categoria].length;
+                    log("Iniciando rastreio de referencias da categoria " + categoria);
+                    fila_de_referencias(0, num_referencias, categoria);
+                } else {
+                    log("Categoria não possuia referencias, deletando....")
+                    delete funcoes.categorias[categoria];
+                    funcoes.salvar_mapeamento_categorias();
+                    res.write("Categoria removida sem erros");
+                    res.end();
+                }
+            }else{
+                log("Categoria não encontrada!","vermelho");
+                res.write("Categoria Não existe");
+                res.end();
             }
         }
-
-        // funcoes.salvar_mapeamento_categorias();
+        function fila_de_referencias(posicao, limite, categoria) {
+            var arquivo = funcoes.categorias[categoria][posicao].arquivo;
+            fs.readFile(
+                path.join(diretorio + "/dados/posts/" + arquivo),
+                function (erro, posts) {
+                    if (erro) {
+                        log("Erro ao ler arquivo de postagens: " + arquivo, "vermelho");
+                        res.status(500);
+                        res.write("Erro interno do servidor");
+                        res.end();
+                        return;
+                    } else {
+                        log("Arquivo " + arquivo + " lido com sucesso");
+                        var cont;
+                        var posicao_categoria;
+                        posts = JSON.parse(posts);
+                        for (cont = 0; cont < funcoes.categorias[categoria][posicao].id.length; cont++) {
+                            posicao_categoria = posts[funcoes.categorias[categoria][posicao].id[cont]].categorias.indexOf(categoria)
+                            if (posicao_categoria && posicao_categoria < 0) {
+                                log("erro de match entre mapeamentos: Categoria " + categoria + " no post: " + funcoes.categorias[categoria][posicao].id[cont], "vermelho");
+                                log("Categorias presentes no post:", "vermelho")
+                                log(posts[funcoes.categorias[categoria][posicao].id[cont]].categorias)
+                                log("Posição da categoria " + categoria);
+                                log(posts[funcoes.categorias[categoria][posicao].id[cont]].categorias.indexOf(categoria));
+                                continue;
+                            } else {
+                                log("Match entre mapeamentos: Categoria " + categoria + " no post: " + funcoes.categorias[categoria][posicao].id[cont] + ". Deletando referencia", "verde");
+                                posts[funcoes.categorias[categoria][posicao].id[cont]].categorias.splice(posicao_categoria, 1);
+                                log("Categorias após o splice ");
+                                log(posts[funcoes.categorias[categoria][posicao].id[cont]].categorias);
+                            }
+                        }
+                        log("Remoção concluída. Iniciando gravação do arquivo " + arquivo);
+                        fs.writeFile(
+                            path.join(diretorio + "/dados/posts/" + arquivo),
+                            JSON.stringify(posts),
+                            function (erro) {
+                                if (erro) {
+                                    log("Erro ao Gravar o arquivo " + arquivo, "vermelho");
+                                    res.status(500);
+                                    res.write("Erro interno do servidor");
+                                    res.end();
+                                    return;
+                                } else {
+                                    log("Arquivo " + arquivo + " gravado com sucesso!");
+                                    if (posicao + 1 < limite) {
+                                        log("Lendo arquivos adicionais na lista de referencias da categoria...");
+                                        posicao++;
+                                        fila_de_referencias(posicao, limite, categoria);
+                                    } else {
+                                        log("Todas as referencias da categoria foram apagadas, apagando categoria " + categoria + " do mapeamento");
+                                        delete funcoes.categorias[categoria];
+                                        funcoes.salvar_mapeamento_categorias();
+                                        res.write("Categoria removida sem erros");
+                                        res.end();
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            )
+        }
     }
 }
