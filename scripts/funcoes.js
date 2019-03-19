@@ -214,6 +214,22 @@ module.exports = {
             }
         );
     },
+    //SALVAR IDS -----------------------------------------------
+    salvar_mapeamento_ids: function () {
+        var funcoes = this;
+        fs.writeFile(
+            path.join(diretorio + "/dados/posts/mapa-id.json"),
+            JSON.stringify(funcoes.ids),
+            function (erro) {
+                if (erro) {
+                    log("erro na gravação do arquivo de IDS!", "vermelho");
+                    log(erro);
+                } else {
+                    log("Sucesso na gravação dos IDS, atualizando...", "verde");
+                }
+            }
+        );
+    },
     //ENVIAR ARQUIVOS NECESSÁRIOS DA PÁGINA ---------------------------
     enviar_arquivo: function (req, res) {
         var funcoes = this;
@@ -826,8 +842,8 @@ module.exports = {
                     res.write("Categoria removida sem erros");
                     res.end();
                 }
-            }else{
-                log("Categoria não encontrada!","vermelho");
+            } else {
+                log("Categoria não encontrada!", "vermelho");
                 res.write("Categoria Não existe");
                 res.end();
             }
@@ -894,6 +910,71 @@ module.exports = {
                     }
                 }
             )
+        }
+    },
+    apagar_postagem: function (post_id, res) {
+        log("Iniciando exclusão da postagem ID: " + post_id);
+        var funcoes = this;
+        var arquivo;
+        var post_info;
+        var post_index;
+        if (funcoes.ids[post_id]) {
+            arquivo = funcoes.ids[post_id];
+            fs.readFile(
+                path.join(diretorio + "/dados/posts/" + arquivo),
+                function (erro, posts) {
+                    if (erro) {
+                        log("Erro ao ler arquivo de postagens: " + erro, "vermelho");
+                        res.status = 500;
+                        res.write("Erro interno do servidor");
+                        res.end();
+                    } else {
+                        log("Arquivo de postagens " + arquivo + " lido com sucesso");
+                        posts = JSON.parse(posts);
+                        post_info = posts[post_id];
+                        for (var cont = 0; cont < post_info.categorias.length; cont++) {
+                            log("Apagando o mapeamento da categoria: " + post_info.categorias[cont]);
+                            for (var cont2 = 0; cont2 < funcoes.categorias[post_info.categorias[cont]].length; cont2++) {
+                                if (funcoes.categorias[post_info.categorias[cont]][cont2].arquivo == arquivo) {
+                                    post_index = funcoes.categorias[post_info.categorias[cont]][cont2].id.indexOf(post_id);
+                                    //funcoes.categorias[post_info.categorias[cont]][cont2].id.slice(post_index,1);
+                                    log("Arquivo " + arquivo + " encontrado dentro da categoria " + post_info.categorias[cont]);
+                                    log("A postagem está na posição " + post_index + " do array de postagens do arquivo");
+                                }
+                            }
+                        }
+                        log("Postagem apagada de todas as referencias de categorias. Iniciando salvamento do arquivo de postagens");
+                        log("iniciando gravação do  no arquivo de postagens");
+                        fs.writeFile(
+                            path.join(diretorio + "/dados/posts/" + arquivo),
+                            JSON.stringify(posts),
+                            function (erro) {
+                                if (erro) {
+                                    log("Erro ao gravar arquivo de postagens", "vermelho");
+                                    res.status(500);
+                                    res.write("Erro interno do servidor");
+                                    res.end();
+                                    return;
+                                } else {                                                                        
+                                    log("Sucesso na exclusão no post no arquivo de postagens, apagando post do mapeamento de IDs", "verde");
+                                    delete posts[post_id];
+                                    log("salvando categorias");
+                                    salvar_mapeamento_categorias();
+                                    log("salvando IDs");
+                                    salvar_mapeamento_ids();
+                                    res.write(JSON.stringify(post_info));
+                                    res.end();
+                                }
+                            }
+                        );
+
+                    }
+                }
+            );
+        } else {
+            res.status(404);
+            res.write("Postagem não encontrada");
+            res.end();
         }
     }
 }
