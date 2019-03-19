@@ -937,7 +937,8 @@ module.exports = {
                             for (var cont2 = 0; cont2 < funcoes.categorias[post_info.categorias[cont]].length; cont2++) {
                                 if (funcoes.categorias[post_info.categorias[cont]][cont2].arquivo == arquivo) {
                                     post_index = funcoes.categorias[post_info.categorias[cont]][cont2].id.indexOf(post_id);
-                                    //funcoes.categorias[post_info.categorias[cont]][cont2].id.slice(post_index,1);
+                                    funcoes.categorias[post_info.categorias[cont]][cont2].id.splice(post_index,1);
+                                    log(funcoes.categorias[post_info.categorias[cont]][cont2].id);
                                     log("Arquivo " + arquivo + " encontrado dentro da categoria " + post_info.categorias[cont]);
                                     log("A postagem está na posição " + post_index + " do array de postagens do arquivo");
                                 }
@@ -945,6 +946,7 @@ module.exports = {
                         }
                         log("Postagem apagada de todas as referencias de categorias. Iniciando salvamento do arquivo de postagens");
                         log("iniciando gravação do  no arquivo de postagens");
+                        delete posts[post_id];
                         fs.writeFile(
                             path.join(diretorio + "/dados/posts/" + arquivo),
                             JSON.stringify(posts),
@@ -957,11 +959,11 @@ module.exports = {
                                     return;
                                 } else {                                                                        
                                     log("Sucesso na exclusão no post no arquivo de postagens, apagando post do mapeamento de IDs", "verde");
-                                    delete posts[post_id];
+                                    delete funcoes.ids[post_id];
                                     log("salvando categorias");
-                                    salvar_mapeamento_categorias();
+                                    funcoes.salvar_mapeamento_categorias();
                                     log("salvando IDs");
-                                    salvar_mapeamento_ids();
+                                    funcoes.salvar_mapeamento_ids();
                                     res.write(JSON.stringify(post_info));
                                     res.end();
                                 }

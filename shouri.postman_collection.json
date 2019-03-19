@@ -1,0 +1,382 @@
+{
+	"info": {
+		"_postman_id": "2393877d-3199-4565-9b60-6062bdaa28c0",
+		"name": "shr",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "teste",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:666/teste",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"teste"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Home",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:666/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Categorias",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:666/categorias",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"categorias"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get post",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:666/post/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"post",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get posts by Cat",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:666/posts/DK",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"posts",
+						"DK"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\":\"{{user}}\",\n\t\"senha\":\"{{senha}}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:666/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sessoes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":\"{{user}}\",\"token\":\"{{token}}\"}"
+				},
+				"url": {
+					"raw": "{{shouri-url}}/sessoes/consultar",
+					"host": [
+						"{{shouri-url}}"
+					],
+					"path": [
+						"sessoes",
+						"consultar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Usuários",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":\"{{user}}\",\"token\":\"{{token}}\"}"
+				},
+				"url": {
+					"raw": "{{shouri-url}}/usuarios/consultar",
+					"host": [
+						"{{shouri-url}}"
+					],
+					"path": [
+						"usuarios",
+						"consultar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Criar Cat",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":\"{{user}}\",\"token\":\"{{token}}\"}"
+				},
+				"url": {
+					"raw": "{{shouri-url}}/categoria/criar/teste666",
+					"host": [
+						"{{shouri-url}}"
+					],
+					"path": [
+						"categoria",
+						"criar",
+						"teste666"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Apagar Cat",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":\"{{user}}\",\"token\":\"{{token}}\"}"
+				},
+				"url": {
+					"raw": "{{shouri-url}}/categoria/apagar/teste666",
+					"host": [
+						"{{shouri-url}}"
+					],
+					"path": [
+						"categoria",
+						"apagar",
+						"teste666"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Apagar Post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":\"{{user}}\",\"token\":\"{{token}}\"}"
+				},
+				"url": {
+					"raw": "{{shouri-url}}/post/apagar/5",
+					"host": [
+						"{{shouri-url}}"
+					],
+					"path": [
+						"post",
+						"apagar",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Criar Post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"titulo\": \"Teste Postman\",\n    \"texto\": \"texto do teste do postman\",\n    \"categorias\": [\n        \"Anime\",\n        \"Games\"\n    ],\n    \"id\": \"postman001\",\n    \"user\": {\n        \"id\": \"{{user}}\",\n        \"token\": \"{{token}}\"\n    }\n}"
+				},
+				"url": {
+					"raw": "{{shouri-url}}/post/criar/",
+					"host": [
+						"{{shouri-url}}"
+					],
+					"path": [
+						"post",
+						"criar",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "56173c8c-f4a7-4395-ace5-bfc4a0a2cbce",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "646eb45f-f5b0-4915-8b00-2aff9988995c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "e6c4d802-ab44-4ab0-b6a7-2029102b3bce",
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "f5fc65f9-4d77-4003-8b8a-19c811bea8ba",
+			"key": "user",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "6ba93037-cb6b-4d53-a95b-e4fb9553a4dd",
+			"key": "senha",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "22a1d399-baba-499f-8996-dca7e255d341",
+			"key": "shouri-url",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
