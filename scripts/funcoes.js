@@ -937,7 +937,7 @@ module.exports = {
                             for (var cont2 = 0; cont2 < funcoes.categorias[post_info.categorias[cont]].length; cont2++) {
                                 if (funcoes.categorias[post_info.categorias[cont]][cont2].arquivo == arquivo) {
                                     post_index = funcoes.categorias[post_info.categorias[cont]][cont2].id.indexOf(post_id);
-                                    funcoes.categorias[post_info.categorias[cont]][cont2].id.splice(post_index,1);
+                                    funcoes.categorias[post_info.categorias[cont]][cont2].id.splice(post_index, 1);
                                     log(funcoes.categorias[post_info.categorias[cont]][cont2].id);
                                     log("Arquivo " + arquivo + " encontrado dentro da categoria " + post_info.categorias[cont]);
                                     log("A postagem está na posição " + post_index + " do array de postagens do arquivo");
@@ -957,7 +957,7 @@ module.exports = {
                                     res.write("Erro interno do servidor");
                                     res.end();
                                     return;
-                                } else {                                                                        
+                                } else {
                                     log("Sucesso na exclusão no post no arquivo de postagens, apagando post do mapeamento de IDs", "verde");
                                     delete funcoes.ids[post_id];
                                     log("salvando categorias");
@@ -969,7 +969,48 @@ module.exports = {
                                 }
                             }
                         );
-
+                    }
+                }
+            );
+        } else {
+            res.status(404);
+            res.write("Postagem não encontrada");
+            res.end();
+        }
+    },
+    editar_postagem: function (post, res) {
+        var funcoes = this;
+        log(post);
+        if (funcoes.ids[post.id]) {
+            var arquivo = funcoes.ids[post.id];
+            log("Postagem encontrada, abrindo arquivo " + arquivo);
+            fs.readFile(
+                path.join(diretorio + "/dados/posts/" + arquivo),
+                function (erro, posts) {
+                    if (erro) {
+                        log("Erro ao ler arquivo de postagens: " + erro, "vermelho");
+                        res.status = 500;
+                        res.write("Erro interno do servidor");
+                        res.end();
+                    } else {
+                        posts = JSON.parse(posts);
+                        posts[post.id].texto = post.texto;
+                        posts[post.id].titulo = post.titulo;
+                        fs.writeFile(
+                            path.join(diretorio + "/dados/posts/" + arquivo),
+                            JSON.stringify(posts),
+                            function (erro) {
+                                if (erro) {
+                                    log("Erro ao salvar arquivo de postagens: " + erro, "vermelho");
+                                    res.status = 500;
+                                    res.write("Erro interno do servidor");
+                                    res.end();
+                                } else {
+                                    res.write("Postagem alterada!");
+                                    res.end();
+                                }
+                            }
+                        );
                     }
                 }
             );

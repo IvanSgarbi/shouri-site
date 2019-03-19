@@ -170,7 +170,7 @@ app.post("/post/criar", function (req, res) {
         res.end();
     }
 });
-//DELETAR POST ---------------------------------------------------
+//DELETAR POST ----------------------------------------------------
 app.post("/post/apagar/:post", function (req, res) {
     var post = req.params.post;
     var user = req.body;
@@ -180,7 +180,22 @@ app.post("/post/apagar/:post", function (req, res) {
     if (permissao == "permitido") {
         log("Apagando a postagem: " + post);
         funcoes.apagar_postagem(post,res);
-        
+    } else {
+        res.status(401);
+        res.write("ERRO: Usuario não autenticado", "vermelho");
+        res.end();
+    }
+});
+//EDITAR POST -------------------------------------------------------
+app.post("/post/editar", function (req, res) {
+    var user = req.body.user;
+    log(user);
+    var post = req.body.post;
+    var permissao = funcoes.checar_token(user);
+    log("Permissão lida: " + permissao, "amarelo");
+    if (permissao == "permitido") {
+        log("Editando a postagem: " + post.id);
+        funcoes.editar_postagem(post,res);
     } else {
         res.status(401);
         res.write("ERRO: Usuario não autenticado", "vermelho");
