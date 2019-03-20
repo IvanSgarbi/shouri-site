@@ -1,43 +1,43 @@
-LISTA DE TAREFAS DO DK:
+ÔªøLISTA DE TAREFAS DO DK:
 
 
-- carregar as sessıes na inicializaÁ„o e fazer sistema igual ao de configs para atualizar.				MÈdio					OK
-para poder trocar a chamada sÌncrona de dados por a leitura da vari·vel.
+- carregar as sess√µes na inicializa√ß√£o e fazer sistema igual ao de configs para atualizar.			M√©dio					OK
+para poder trocar a chamada s√≠ncrona de dados por a leitura da vari√°vel.
 
-- ^fazer o mesmo com os mapeamentos por ID e categorias									MÈdio					OK
+- ^fazer o mesmo com os mapeamentos por ID e categorias						M√©dio					OK
 
-- Ajustar o feedback de criaÁ„o de postagem no front											F·cil					OK
+- Ajustar o feedback de cria√ß√£o de postagem no front							F√°cil					OK
 
-- fazer protÛtipo do sistema de postagens													Ultra Violence+			OK
+- fazer prot√≥tipo do sistema de postagens								Ultra Violence+				OK
 
-- Ajustar os pau do IE																	F·cil(sqn)				Cancelado
+- Ajustar os pau do IE										F√°cil(sqn)				Cancelado
 
-- criar lista de categorias e sistema de gerenciamento (criaÁ„o e exclus„o) exclusivo de ADMS			MÈdio					OK
+- criar lista de categorias e sistema de gerenciamento (cria√ß√£o e exclus√£o) exclusivo de ADMS			M√©dio					OK
 
-- Fazer Sistema de "morte" das sessıes													MÈdio					OK
+- Fazer Sistema de "morte" das sess√µes								M√©dio					OK
 
-- ValidaÁ„o de ID duplicado para postagens													F·cil					OK
+- Valida√ß√£o de ID duplicado para postagens								F√°cil					OK
 
-- Criar coleÁ„o no postman para testar todas as chamadas do site mais rapidamente					MÈdio					OK
+- Criar cole√ß√£o no postman para testar todas as chamadas do site mais rapidamente				M√©dio					OK
 
-- Resolver problema das configs de qual arquivo deve receber o post								MÈdio					OK
+- Resolver problema das configs de qual arquivo deve receber o post					M√©dio					OK
 
-- Apagar posts																			DifÌcil					OK
+- Apagar posts											Dif√≠cil					OK
 
-- Editar Posts																			MÈdio					OK
+- Editar Posts											M√©dio					OK
 
-- Permitir ediÁ„o de post sÛ se for o autor ou ADM											MÈdio					
+- Permitir edi√ß√£o de post s√≥ se for o autor ou ADM							M√©dio					Em Progresso...
 
-- Diferenciar ADM de usu·rio comum na autenticaÁ„o											MÈdio					
+- Diferenciar ADM de usu√°rio comum na autentica√ß√£o							M√©dio					
 
-- Renovar token sempre que ocorre uma autenticaÁ„o											MÈdio					
+- Renovar token sempre que ocorre uma autentica√ß√£o							M√©dio					
 
-- Fazer criptografia para senhas															DifÌcil					
+- Fazer criptografia para senhas									Dif√≠cil					
 
-- Aprimorar sistema de postagens															DifÌcil					
+- Aprimorar sistema de postagens									Dif√≠cil					
 	
-- Idealizar o Layout																		DifÌcil					
+- Idealizar o Layout										Dif√≠cil					
 
-- Cada requisiÁ„o autenticada renova o token												F·cil					
+- Cada requisi√ß√£o autenticada renova o token								F√°cil					
 
-- Listagem de todas as postagens do site													DifÌcil					
+- Listagem de todas as postagens do site								Dif√≠cil					
