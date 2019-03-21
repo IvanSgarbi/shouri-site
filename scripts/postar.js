@@ -31,6 +31,8 @@ document.onclick = function (ev) {
                     document.getElementById("resultado").innerHTML = "Erro";
                 }
             }
+        }else{
+            alert("Existem campos não preenchidos!");
         }
     }
 }

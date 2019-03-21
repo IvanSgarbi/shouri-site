@@ -4,40 +4,41 @@
 - carregar as sessões na inicialização e fazer sistema igual ao de configs para atualizar.			Médio					OK
 para poder trocar a chamada síncrona de dados por a leitura da variável.
 
-- ^fazer o mesmo com os mapeamentos por ID e categorias						Médio					OK
+- ^fazer o mesmo com os mapeamentos por ID e categorias						                        Médio					OK
 
-- Ajustar o feedback de criação de postagem no front							Fácil					OK
+- Ajustar o feedback de criação de postagem no front							                    Fácil					OK
 
-- fazer protótipo do sistema de postagens								Ultra Violence+				OK
+- fazer protótipo do sistema de postagens								                            Ultra Violence+			OK
 
-- Ajustar os pau do IE										Fácil(sqn)				Cancelado
+- Ajustar os pau do IE										                                        Fácil(sqn)				Cancelado
 
-- criar lista de categorias e sistema de gerenciamento (criação e exclusão) exclusivo de ADMS			Médio					OK
+- criar lista de categorias e sistema de gerenciamento (criação e exclusão) exclusivo de ADMS		Médio					OK
 
-- Fazer Sistema de "morte" das sessões								Médio					OK
+- Fazer Sistema de "morte" das sessões								                                Médio					OK
 
-- Validação de ID duplicado para postagens								Fácil					OK
+- Validação de ID duplicado para postagens								                            Fácil					OK
 
-- Criar coleção no postman para testar todas as chamadas do site mais rapidamente				Médio					OK
+- Criar coleção no postman para testar todas as chamadas do site mais rapidamente				    Médio					OK
 
-- Resolver problema das configs de qual arquivo deve receber o post					Médio					OK
+- Resolver problema das configs de qual arquivo deve receber o post					                Médio					OK
 
-- Apagar posts											Difícil					OK
+- Apagar posts											                                            Difícil					OK
 
-- Editar Posts											Médio					OK
+- Editar Posts											                                            Médio					OK
 
-- Permitir edição de post só se for o autor ou ADM							Médio					Em Progresso...
+- Permitir edição de post só se for o autor ou ADM							                        Médio					OK
 
-- Diferenciar ADM de usuário comum na autenticação							Médio					
+- Diferenciar ADM de usuário comum na autenticação							                        Médio					OK
 
-- Renovar token sempre que ocorre uma autenticação							Médio					
+- Renovar token sempre que ocorre uma autenticação							                        Médio					OK
 
-- Fazer criptografia para senhas									Difícil					
+- Fazer criptografia para senhas									                                Difícil					OK
 
-- Aprimorar sistema de postagens									Difícil					
-	
-- Idealizar o Layout										Difícil					
+- Aprimorar sistema de postagens									                                Difícil++				Em progresso...
+	(Na tela de postagem criar uma view para poder saber como a postagem vai ficar)
 
-- Cada requisição autenticada renova o token								Fácil					
+- Idealizar o Layout										                                        Difícil								
 
-- Listagem de todas as postagens do site								Difícil					
+- Listagem de todas as postagens do site								                            Difícil					   
+
+- Automaticamente Incluir autor como categoria da postagem                                          Fácil                   

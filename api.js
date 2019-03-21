@@ -18,44 +18,22 @@ app.get("/", function (req, res) {
     res.sendFile(path.join(caminho + "/paginas/index.html"));
 });
 //ENDPOINT DE TESTES -----------------------------------------
-
 app.get("/teste", function (req, res) {
     log("Foi o html de teste", "amarelo");
     var caminho = __dirname;
     res.sendFile(path.join(caminho + "/paginas/teste.html"));
 });
-//CATEGORIAS --------------------------------------------------
+//CATEGORIAS -------------------------------------------------
 app.get("/categorias", function (req, res) {
     funcoes.listar_categorias(res);
 });
-//LOGIN -------------------------------------------------------
+//LOGIN ------------------------------------------------------
 app.post("/login", function (dados, res) {
     log("POST DE LOGIN RECEBIDO:");
-    //log(dados);
-    var cont;
     dados = dados.body;
-    var senha = dados.senha + dados.id + dados.senha + dados.id.length + dados.senha.length;
-    senha = senha + senha.length;
-    var usuario;
-    var token;
-    var caminho = path.join(__dirname + "/dados/usuarios.json");
-    fs.readFile(caminho, function (erro, arquivo) {
-        arquivo = JSON.parse(arquivo);
-        if (erro) {
-            res.send("Falha no login: " + erro);
-        } else {
-            for (cont = 0; cont < arquivo.usuarios.length; cont++) {
-                usuario = arquivo.usuarios[cont];
-                if (usuario.id == dados.id && senha == usuario.senha) {
-                    token = funcoes.gerarToken();
-                    funcoes.gravar_token(usuario.id, res, token);
-                    return;
-                }
-            }
-            res.write("Falha");
-            res.end();
-        }
-    });
+    log(dados);
+    funcoes.logar(dados.id, dados.senha, res);
+
 });
 //ACESSAR POST --------------------------------------------------------
 app.get("/post/:id", function (req, res) {
@@ -93,7 +71,7 @@ app.get("/*", function (req, res) {
                 id: req.headers["shouri-user"],
                 token: req.headers["shouri-token"]
             }
-            if (funcoes.checar_token(user) == "permitido") {
+            if (funcoes.checar_token(user)) {
                 log("sucesso! Redirecionanado para a página!", "verde");
                 funcoes.localizar_pagina(req, res, pagina);
             } else {
@@ -115,7 +93,7 @@ app.post("/sessoes/consultar", function (req, res) {
     log("post de detalhes de sessões recebido", "amarelo");
     var user = req.body;
     log(user);
-    if (funcoes.checar_token(user) == "permitido") {
+    if (funcoes.checar_token(user) && funcoes.checar_admin(user)) {
         funcoes.solicitar_sessoes(res);
     } else {
         res.status(401);
@@ -130,8 +108,9 @@ app.post("/usuarios/consultar", function (req, res) {
     var user = req.body;
     log(JSON.stringify(user), "azul");
     var permissao = funcoes.checar_token(user);
+    var admin = funcoes.checar_admin(user);
     log("Permissão lida: " + permissao, "amarelo");
-    if (permissao == "permitido") {
+    if (permissao && admin) {
         funcoes.solicitar_usuarios(user, res);
     } else {
         res.status(401);
@@ -147,7 +126,8 @@ app.post("/sessoes/apagar", function (req, res) {
     log(user);
     var permissao = funcoes.checar_token(user);
     log("Permissão lida: " + permissao, "amarelo");
-    if (permissao == "permitido") {
+    var admin = funcoes.checar_admin(user);
+    if (permissao && admin) {
         funcoes.apagar_sessoes(res, user.nome);
     } else {
         res.status(401);
@@ -162,7 +142,7 @@ app.post("/post/criar", function (req, res) {
     log(user);
     var permissao = funcoes.checar_token(user);
     log("Permissão lida: " + permissao, "amarelo");
-    if (permissao == "permitido") {
+    if (permissao) {
         funcoes.registrar_post(post, res);
     } else {
         res.status(401);
@@ -177,9 +157,10 @@ app.post("/post/apagar/:post", function (req, res) {
     log(user);
     var permissao = funcoes.checar_token(user);
     log("Permissão lida: " + permissao, "amarelo");
-    if (permissao == "permitido") {
+    var admin = funcoes.checar_admin(user);
+    if (permissao && admin) {
         log("Apagando a postagem: " + post);
-        funcoes.apagar_postagem(post,res);
+        funcoes.apagar_postagem(post, res);
     } else {
         res.status(401);
         res.write("ERRO: Usuario não autenticado", "vermelho");
@@ -193,9 +174,9 @@ app.post("/post/editar", function (req, res) {
     var post = req.body.post;
     var permissao = funcoes.checar_token(user);
     log("Permissão lida: " + permissao, "amarelo");
-    if (permissao == "permitido") {
+    if (permissao) {
         log("Editando a postagem: " + post.id);
-        funcoes.editar_postagem(post,res);
+        funcoes.editar_postagem(post, res, user);
     } else {
         res.status(401);
         res.write("ERRO: Usuario não autenticado", "vermelho");
@@ -209,12 +190,13 @@ app.post("/categoria/apagar/:cat",
         var user = req.body;
         log(user);
         var permissao = funcoes.checar_token(user);
+        var admin = funcoes.checar_admin(user);
         log("Permissão lida: " + permissao, "amarelo");
-        if (permissao == "permitido") {
+        if (permissao && admin) {
             log("A categoria " + categoria + " será deletada");
             funcoes.apagar_categoria(categoria, res);
         } else {
-            res.status = 401;
+            res.status(401);
             res.write("Acesso negado");
             res.end();
         }
@@ -227,12 +209,13 @@ app.post("/categoria/criar/:cat",
         var user = req.body;
         log(user);
         var permissao = funcoes.checar_token(user);
+        var admin = funcoes.checar_admin(user);
         log("Permissão lida: " + permissao, "amarelo");
-        if (permissao == "permitido") {
+        if (permissao && admin) {
             log("A categoria " + categoria + " será criada");
             funcoes.criar_categoria(categoria, res);
         } else {
-            res.status = 401;
+            res.status(401);
             res.write("Acesso negado");
             res.end();
         }

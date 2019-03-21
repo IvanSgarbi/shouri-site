@@ -265,22 +265,40 @@ module.exports = {
     },
     //CHECAR TOKEN ----------------------------------------------------
     checar_token: function (user) {
-        var retorno;
         var funcoes = this;
         log("lendo dados da variável de sessoes");
         if (funcoes.sessoes[user.id]) {
             if (funcoes.sessoes[user.id].token == user.token) {
                 log("token encontrado! Autorizando acesso", "verde");
-                retorno = "permitido";
+                log("Renovando sessão");
+                var agora = new Date().getTime();
+                funcoes.sessoes[user.id].vida = agora + 120000000;
+                return true;
             } else {
                 log("usuario encontrado, porém o token não é válido", "vermelho");
-                retorno = "negado";
+                return false;
             }
         } else {
             log("Usuário não encontrado no arquivo de sessoes", "vermelho");
-            retorno = "negado";
+            return false;
         }
-        return retorno;
+    },
+    //CHECAR ADMIN ----------------------------------------------------
+    checar_admin: function (user) {
+        var funcoes = this;
+        log("lendo dados da variável de sessoes");
+        if (funcoes.sessoes[user.id]) {
+            if (funcoes.sessoes[user.id].token == user.token && funcoes.sessoes[user.id].admin == true) {
+                log("Admin Confirmado! Autorizando acesso", "verde");
+                return true;
+            } else {
+                log("Falha na autenticação de ADMIN", "vermelho");
+                return false;
+            }
+        } else {
+            log("Usuário não encontrado no arquivo de sessoes", "vermelho");
+            return false;
+        }
     },
     //ENVIAR DADOS DE USUARIOS ADMIN ----------------------------------
     solicitar_usuarios: function (usuario, res) {
@@ -370,12 +388,13 @@ module.exports = {
         return token.toString();
     },
     //SALVAR TOKEN ----------------------------------------------------
-    gravar_token: function (id, res, token) {
+    gravar_token: function (id, res, token, admin) {
         log("gravando token");
         var funcoes = this;
         var agora = new Date().getTime();
         funcoes.sessoes[id] = {
             token: token,
+            admin: admin,
             vida: agora + 120000000
         }
         fs.writeFile(path.join(diretorio + "/dados/sessoes.json"), JSON.stringify(funcoes.sessoes), function (erro) {
@@ -387,6 +406,53 @@ module.exports = {
                 res.end();
             }
         });
+    },
+    //LOGIN ----------------------------------------------------------
+    logar: function (id, senha, res) {
+        var funcoes = this;
+        senha = funcoes.senha(senha);
+        var cont;
+        var usuario;
+        var token;
+        var caminho = path.join(diretorio + "/dados/usuarios.json");
+        fs.readFile(caminho, function (erro, arquivo) {
+            arquivo = JSON.parse(arquivo);
+            if (erro) {
+                res.send("Falha no login: " + erro);
+            } else {
+                for (cont = 0; cont < arquivo.usuarios.length; cont++) {
+                    usuario = arquivo.usuarios[cont];
+                    if (usuario.id == id && senha == usuario.senha) {
+                        token = funcoes.gerarToken();
+                        funcoes.gravar_token(id, res, token, usuario.admin);
+                        return;
+                    }
+                }
+                res.write("Falha");
+                res.end();
+            }
+        });
+    },
+    //SENHA -----------------------------------------------------------
+    senha: function (senha) {
+        var num = 1;
+        var nova_senha = 0;
+        var unicode;
+        for (var cont = 0; cont < senha.length; cont++) {
+            unicode = senha.charCodeAt(cont)
+            num *= (unicode * 2) + (10 + unicode * 3);
+            num += cont;
+        }
+        num = num + "shouri";
+        for (cont = 0; cont < num.length; cont++) {
+            unicode = num.charCodeAt(cont);
+            nova_senha += cont;
+            nova_senha *= (unicode * 3);
+            log(nova_senha);
+            nova_senha = 1 + nova_senha;
+            log(nova_senha);
+        }
+        return nova_senha;
     },
     //ENVIAR AS SESSÕES -----------------------------------------------
     solicitar_sessoes: function (res) {
@@ -978,7 +1044,7 @@ module.exports = {
             res.end();
         }
     },
-    editar_postagem: function (post, res) {
+    editar_postagem: function (post, res, autor) {
         var funcoes = this;
         log(post);
         if (funcoes.ids[post.id]) {
@@ -994,23 +1060,29 @@ module.exports = {
                         res.end();
                     } else {
                         posts = JSON.parse(posts);
-                        posts[post.id].texto = post.texto;
-                        posts[post.id].titulo = post.titulo;
-                        fs.writeFile(
-                            path.join(diretorio + "/dados/posts/" + arquivo),
-                            JSON.stringify(posts),
-                            function (erro) {
-                                if (erro) {
-                                    log("Erro ao salvar arquivo de postagens: " + erro, "vermelho");
-                                    res.status = 500;
-                                    res.write("Erro interno do servidor");
-                                    res.end();
-                                } else {
-                                    res.write("Postagem alterada!");
-                                    res.end();
+                        if (posts[post.id].autor == autor.id || funcoes.checar_admin(autor)) {
+                            posts[post.id].texto = post.texto;
+                            posts[post.id].titulo = post.titulo;
+                            fs.writeFile(
+                                path.join(diretorio + "/dados/posts/" + arquivo),
+                                JSON.stringify(posts),
+                                function (erro) {
+                                    if (erro) {
+                                        log("Erro ao salvar arquivo de postagens: " + erro, "vermelho");
+                                        res.status = 500;
+                                        res.write("Erro interno do servidor");
+                                        res.end();
+                                    } else {
+                                        res.write("Postagem alterada!");
+                                        res.end();
+                                    }
                                 }
-                            }
-                        );
+                            );
+                        } else {
+                            res.status(401);
+                            res.write("Usuário não é admin ou autor da postagem");
+                            res.end();
+                        }
                     }
                 }
             );
