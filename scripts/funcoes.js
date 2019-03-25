@@ -1091,5 +1091,30 @@ module.exports = {
             res.write("Postagem não encontrada");
             res.end();
         }
+    },
+    //FEED DE POSTAGENS --------------------------------------------------
+    feed: function (res, pagina) {
+        var funcoes = this;
+        var total_pag = funcoes.config.posts.ultimo_arquivo;
+        var posts_ultimo_arquivo = funcoes.config.posts.posts_ultimo_arquivo;
+        var arquivos = [];
+        var mensagem = "";
+        pagina = Number(pagina);
+        if (pagina > total_pag) {
+            pagina = total_pag;
+        } else if (pagina < 1) {
+            pagina = 1;
+        }
+        arquivos.push({ arquivo: (total_pag - (pagina - 1)), posts: posts_ultimo_arquivo });
+        if (posts_ultimo_arquivo < 10 && (total_pag - pagina) > 0) {
+            arquivos.push({ arquivo: (total_pag - pagina), posts: (10 - posts_ultimo_arquivo) });
+        }
+        for (var cont = 0; cont < arquivos.length; cont++) {
+            mensagem = mensagem + "O arquivo " + arquivos[cont].arquivo +
+                ".json terá " + arquivos[cont].posts + " lidos e adicionados a pagina " + pagina + ";";
+        }
+        res.write(mensagem);
+        res.end();
+        //CONTINUAR AQUI -----------------------------------------------------------------------
     }
 }

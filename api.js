@@ -21,7 +21,17 @@ app.get("/", function (req, res) {
 app.get("/teste", function (req, res) {
     log("Foi o html de teste", "amarelo");
     var caminho = __dirname;
-    res.sendFile(path.join(caminho + "/paginas/teste.html"));
+    var teste = req.query.teste;
+    res.write(teste);
+    res.end();
+
+    // res.sendFile(path.join(caminho + "/paginas/teste.html"));
+});
+//LISTAGEM DE TODAS AS POSTAGENS --------------------------------
+app.get("/feed", function (req, res) {
+    log("FEED REQUISITADO");
+    var pagina = req.query.pagina;
+    funcoes.feed(res,pagina);
 });
 //CATEGORIAS -------------------------------------------------
 app.get("/categorias", function (req, res) {

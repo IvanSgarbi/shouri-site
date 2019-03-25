@@ -34,11 +34,13 @@ para poder trocar a chamada síncrona de dados por a leitura da variável.
 
 - Fazer criptografia para senhas									                                Difícil					OK
 
-- Aprimorar sistema de postagens									                                Difícil++				Em progresso...
+- Aprimorar sistema de postagens									                                Difícil++				Em progresso...(pausa)
 	(Na tela de postagem criar uma view para poder saber como a postagem vai ficar)
 
 - Idealizar o Layout										                                        Difícil								
 
-- Listagem de todas as postagens do site								                            Difícil					   
+- Listagem de todas as postagens do site com paginação					                            Difícil+				Em progresso...	   
+
+- Paginação para listagem das postagens																Difícil+
 
 - Automaticamente Incluir autor como categoria da postagem                                          Fácil                   
