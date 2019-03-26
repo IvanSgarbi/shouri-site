@@ -1113,8 +1113,27 @@ module.exports = {
             mensagem = mensagem + "O arquivo " + arquivos[cont].arquivo +
                 ".json terá " + arquivos[cont].posts + " lidos e adicionados a pagina " + pagina + ";";
         }
+
         res.write(mensagem);
         res.end();
+
+        function montar_listagem(etapa, res) {
+
+            fs.readFile(
+                path.join(diretorio + "/dados/posts/" + arquivos[etapa].arquivo+".json"),
+                function (erro, posts) {
+                    if (erro) {
+                        log("Erro ao ler arquivo de postagens: " + arquivo, "vermelho");
+                        res.status(500);
+                        res.write("Erro interno do servidor");
+                        res.end();
+                        return;
+                    } else {
+                        
+                    }
+                }
+            )
+        }
         //CONTINUAR AQUI -----------------------------------------------------------------------
     }
 }
