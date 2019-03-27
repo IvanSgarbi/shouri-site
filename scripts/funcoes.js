@@ -612,7 +612,7 @@ module.exports = {
         }
     },
     //ORDENAR POSTS -------------------------------------------------------------------------
-    ordenar_posts: function (lista_posts, res) {
+    ordenar_posts: function (lista_posts, res, retornar) {
         var funcoes = this;
         lista_posts.sort(function (a, b) {
             if (a.data < b.data) {
@@ -623,7 +623,12 @@ module.exports = {
                 return 0;
             }
         });
-        funcoes.enviar_pagina_posts(lista_posts, res);
+        if (retornar) {
+            return lista_posts;
+        } else {
+            funcoes.enviar_pagina_posts(lista_posts, res);
+        }
+
     },
     //ENVIAR PÁGINA DE POSTS -----------------------------------------------------------------
     enviar_pagina_posts: function (lista_posts, res) {
@@ -1099,7 +1104,12 @@ module.exports = {
         var posts_ultimo_arquivo = funcoes.config.posts.posts_ultimo_arquivo;
         var arquivos = [];
         var mensagem = "";
-        pagina = Number(pagina);
+        var listagem_final = [];
+        if (!pagina) {
+            pagina = 1;
+        } else {
+            pagina = Number(pagina);
+        }
         if (pagina > total_pag) {
             pagina = total_pag;
         } else if (pagina < 1) {
@@ -1110,26 +1120,53 @@ module.exports = {
             arquivos.push({ arquivo: (total_pag - pagina), posts: (10 - posts_ultimo_arquivo) });
         }
         for (var cont = 0; cont < arquivos.length; cont++) {
-            mensagem = mensagem + "O arquivo " + arquivos[cont].arquivo +
-                ".json terá " + arquivos[cont].posts + " lidos e adicionados a pagina " + pagina + ";";
+            log("O arquivo " + arquivos[cont].arquivo +
+                ".json terá " + arquivos[cont].posts + " lidos e adicionados a pagina " + pagina + ". ");
         }
-
-        res.write(mensagem);
-        res.end();
-
-        function montar_listagem(etapa, res) {
-
+        montar_listagem(0, res, arquivos, listagem_final);
+        function montar_listagem(etapa, res, arquivos) {
+            log("Montador chamado para etapa " + (etapa + 1) + "/" + arquivos.length);
             fs.readFile(
-                path.join(diretorio + "/dados/posts/" + arquivos[etapa].arquivo+".json"),
+                path.join(diretorio + "/dados/posts/" + arquivos[etapa].arquivo + ".json"),
                 function (erro, posts) {
                     if (erro) {
-                        log("Erro ao ler arquivo de postagens: " + arquivo, "vermelho");
+                        log("Erro ao ler arquivo de postagens: " + arquivos[etapa].arquivo, "vermelho");
                         res.status(500);
                         res.write("Erro interno do servidor");
                         res.end();
                         return;
                     } else {
-                        
+                        log("Sucesso na leitura do arquivo de postagens: " + arquivos[etapa].arquivo, "verde");
+                        var posts_array = [];
+                        var post_id;
+                        posts = JSON.parse(posts);
+                        for (post_id in posts) {
+                            posts_array.push(posts[post_id]);
+                        }
+                        log("Objeto de chave/valor convertido para array com " + posts_array.length + " postagens, chamando ordenador de postagens");
+                        posts_array = funcoes.ordenar_posts(posts_array, null, true);
+                        if (etapa == 0) {
+                            log("Montando listagem final. Etapa: " + (etapa + 1) + "/" + arquivos.length);
+                            for (var cont = (posts_array.length - arquivos[etapa].posts); cont < posts_array.length; cont++) {
+                                log("capturando postagem numero "+cont+" e adicionando a listagem");
+                                listagem_final.push(posts_array[cont]);
+                            }
+                            if (arquivos.length > 1) {
+                                log("chamando a segunda etapa, o arquivo de listagem final contém "+listagem_final.length+" posts");
+                                montar_listagem(1, res, arquivos, listagem_final);
+                            } else {
+                                res.send(listagem_final);
+                                res.end();
+                            }
+                        } else {
+                            log("Montando listagem final. Etapa: " + (etapa + 1) + "/" + arquivos.length);
+                            for (var cont = 0; cont < arquivos[etapa].posts; cont++) {
+                                log("capturando postagem numero "+cont+" e adicionando a listagem");
+                                listagem_final.push(posts_array[cont]);
+                            }
+                            res.send(listagem_final);
+                            res.end();
+                        }
                     }
                 }
             )
