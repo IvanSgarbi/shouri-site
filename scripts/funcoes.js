@@ -542,9 +542,8 @@ module.exports = {
         res.end();
     },
     //LOCALIZAR POSTS DE CATEGORIA -------------------------------------------------------------
-    posts_cat: function (cat, res) {
+    posts_cat: function (cat, res, pagina) {
         var funcoes = this;
-        var arquivos = [];
         var posts = {};
         var cont;
         if (cat) {
@@ -553,10 +552,9 @@ module.exports = {
             if (mapa[cat]) {
                 log("categoria encontrada no mapa", "verde");
                 for (cont = 0; cont < mapa[cat].length; cont++) {
-                    arquivos.push(mapa[cat][cont].arquivo);
                     posts[mapa[cat][cont].arquivo] = mapa[cat][cont].id;
                 }
-                funcoes.criar_lista_posts(arquivos, posts, res);
+                funcoes.definir_lista_posts(posts, res, pagina);
             } else {
                 log("Categoria não encontrada", "vermelho");
                 res.sendFile(path.join(diretorio + "/paginas/404.html"));
@@ -568,12 +566,40 @@ module.exports = {
             return;
         }
     },
+    //ORDENAR ARQUIVOS PARA PAGINAÇÃO -------------------------------------------------------
+    definir_lista_posts: function (posts, res, pagina) {
+        var funcoes = this;
+        var posts_por_pagina = 10;
+        var arquivos = Object.keys(posts);
+        var posts_totais = 0;
+        arquivos.sort();
+        var ESTRUTURA_DAS_PAGINAS = [
+            {
+                arquivo: "1.json",
+                posts: 3,
+                quais_posts: "primeiros" || "todos" || "nenhum"
+            }
+        ]
+        for (var cont = (arquivos.length - 1); cont >= 0; cont--) {
+            if (posts_totais + posts[arquivos[cont]].length < 10) {
+
+            }
+        }
+        //AQUI ---------------------------------------------------------------------------------------------------
+
+
+
+
+
+        this.criar_lista_posts(posts, res);
+    },
     //MONTAR LISTA DE POSTS -----------------------------------------------------------------
-    criar_lista_posts: function (arquivos, posts, res) {
+    criar_lista_posts: function (posts, res) {
         var funcoes = this;
         var cont_post;
         var arquivo_atual;
         var lista_posts = [];
+        var arquivos = Object.keys(posts);
         log("Lendo arquivos para montar a lista.");
         log("Arquivos: ");
         log(arquivos);
@@ -1148,11 +1174,11 @@ module.exports = {
                         if (etapa == 0) {
                             log("Montando listagem final. Etapa: " + (etapa + 1) + "/" + arquivos.length);
                             for (var cont = (posts_array.length - arquivos[etapa].posts); cont < posts_array.length; cont++) {
-                                log("capturando postagem numero "+cont+" e adicionando a listagem");
+                                log("capturando postagem numero " + cont + " e adicionando a listagem");
                                 listagem_final.push(posts_array[cont]);
                             }
                             if (arquivos.length > 1) {
-                                log("chamando a segunda etapa, o arquivo de listagem final contém "+listagem_final.length+" posts");
+                                log("chamando a segunda etapa, o arquivo de listagem final contém " + listagem_final.length + " posts");
                                 montar_listagem(1, res, arquivos, listagem_final);
                             } else {
                                 res.send(listagem_final);
@@ -1161,7 +1187,7 @@ module.exports = {
                         } else {
                             log("Montando listagem final. Etapa: " + (etapa + 1) + "/" + arquivos.length);
                             for (var cont = 0; cont < arquivos[etapa].posts; cont++) {
-                                log("capturando postagem numero "+cont+" e adicionando a listagem");
+                                log("capturando postagem numero " + cont + " e adicionando a listagem");
                                 listagem_final.push(posts_array[cont]);
                             }
                             res.send(listagem_final);
@@ -1171,6 +1197,5 @@ module.exports = {
                 }
             )
         }
-        //CONTINUAR AQUI -----------------------------------------------------------------------
     }
 }

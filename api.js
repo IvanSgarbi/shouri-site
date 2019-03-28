@@ -31,7 +31,7 @@ app.get("/teste", function (req, res) {
 app.get("/feed", function (req, res) {
     log("FEED REQUISITADO");
     var pagina = req.query.pagina;
-    funcoes.feed(res,pagina);
+    funcoes.feed(res, pagina);
 });
 //CATEGORIAS -------------------------------------------------
 app.get("/categorias", function (req, res) {
@@ -53,7 +53,9 @@ app.get("/post/:id", function (req, res) {
 //LISTAR POSTS POR CATEGORIA ------------------------------------------
 app.get("/posts/:categoria", function (req, res) {
     log("A categoria " + req.params.categoria + " foi solicitada", "amarelo");
-    funcoes.posts_cat(req.params.categoria, res);
+    var pagina = req.query.pagina;
+    var categoria = req.params.categoria;
+    funcoes.posts_cat(categoria, res, pagina);
 });
 //ACESSAR QUALQUER AREA SOMENTE PARA USUARIOS -------------------------
 app.get("/*", function (req, res) {
