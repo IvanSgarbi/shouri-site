@@ -9,6 +9,7 @@ module.exports = {
     mapeamento_categorias: null,
     mapeamento_ids: null,
     lista_categorias: null,
+    paginacao_categorias: null,
     //INICIAR SERVIDOR -------------------------------------------
     iniciar: function (server, port, app) {
         var funcoes = this;
@@ -82,6 +83,36 @@ module.exports = {
                     }
                 }
             );
+        }
+        //Configurar as paginações das categorias na inicialização ------
+        function iniciar_paginacao_categorias() {
+            var ESTRUTURA_DAS_PAGINAS = [
+                {
+                    arquivo: "1.json",
+                    posts: 3,
+                    quais_posts: "primeiros" || "todos" || "nenhum"
+                }
+            ]
+            var posts_por_pagina = 10;
+            var categorias = Object.keys(funcoes.categorias);
+            var posts_totais;
+            var paginas_totais;
+            arquivos.sort();
+
+            for (var cont = 0; cont < categorias.length; cont++) {
+                posts_totais = 0;
+                for (var cont2 = 0; cont2 < funcoes.categorias[categorias[cont1]].length; cont++) {
+                    posts_totais += funcoes.categorias[categorias[cont1]][cont2].id.length;
+                }
+                if (posts_totais % 10 > 0) {
+                    paginas_totais = Math.floor((posts_totais/10)+1)
+                } else {
+                    paginas_totais = Math.floor(posts_totais/10)
+                }
+                
+            }
+
+
         }
         iniciar_configuracoes();
     },
@@ -554,7 +585,7 @@ module.exports = {
                 for (cont = 0; cont < mapa[cat].length; cont++) {
                     posts[mapa[cat][cont].arquivo] = mapa[cat][cont].id;
                 }
-                funcoes.definir_lista_posts(posts, res, pagina);
+                funcoes.criar_lista_posts(posts, res, pagina);
             } else {
                 log("Categoria não encontrada", "vermelho");
                 res.sendFile(path.join(diretorio + "/paginas/404.html"));
@@ -565,33 +596,6 @@ module.exports = {
             res.sendFile(path.join(diretorio + "/paginas/404.html"));
             return;
         }
-    },
-    //ORDENAR ARQUIVOS PARA PAGINAÇÃO -------------------------------------------------------
-    definir_lista_posts: function (posts, res, pagina) {
-        var funcoes = this;
-        var posts_por_pagina = 10;
-        var arquivos = Object.keys(posts);
-        var posts_totais = 0;
-        arquivos.sort();
-        var ESTRUTURA_DAS_PAGINAS = [
-            {
-                arquivo: "1.json",
-                posts: 3,
-                quais_posts: "primeiros" || "todos" || "nenhum"
-            }
-        ]
-        for (var cont = (arquivos.length - 1); cont >= 0; cont--) {
-            if (posts_totais + posts[arquivos[cont]].length < 10) {
-
-            }
-        }
-        //AQUI ---------------------------------------------------------------------------------------------------
-
-
-
-
-
-        this.criar_lista_posts(posts, res);
     },
     //MONTAR LISTA DE POSTS -----------------------------------------------------------------
     criar_lista_posts: function (posts, res) {
