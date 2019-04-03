@@ -85,36 +85,97 @@ module.exports = {
             );
         }
         //Configurar as paginações das categorias na inicialização ------
-        function iniciar_paginacao_categorias() {
-            var ESTRUTURA_DAS_PAGINAS = [
-                {
-                    arquivo: "1.json",
-                    posts: 3,
-                    quais_posts: "primeiros" || "todos" || "nenhum"
-                }
-            ]
-            var posts_por_pagina = 10;
-            var categorias = Object.keys(funcoes.categorias);
-            var posts_totais;
-            var paginas_totais;
-            arquivos.sort();
-
-            for (var cont = 0; cont < categorias.length; cont++) {
-                posts_totais = 0;
-                for (var cont2 = 0; cont2 < funcoes.categorias[categorias[cont1]].length; cont++) {
-                    posts_totais += funcoes.categorias[categorias[cont1]][cont2].id.length;
-                }
-                if (posts_totais % 10 > 0) {
-                    paginas_totais = Math.floor((posts_totais/10)+1)
-                } else {
-                    paginas_totais = Math.floor(posts_totais/10)
-                }
-                
-            }
-
-
-        }
         iniciar_configuracoes();
+    },
+    iniciar_paginacao_categorias: function () {
+        var ESTRUTURA_DAS_PAGINAS = {
+            "Anime": {
+                paginas: 10,
+                lista_paginas: {
+                    1: [
+                        {
+                            arquivo: "1.json",
+                            posts: 3,
+                            quais_posts: "primeiros" || "todos" || "ultimos"
+                        }
+                    ]
+                }
+            }
+        }
+        var paginas_categoria = {}
+        var posts_por_pagina = 10;
+        var categorias = Object.keys(funcoes.categorias);
+        var posts_totais;
+        var posts_ultima_pagina = 10;
+        var paginas_totais;
+        var postagens_restantes = 10;
+        var arquivo_index;
+        arquivos.sort();
+        //LOOP PARA CADA CATEGORIA
+        for (var cont = 0; cont < categorias.length; cont++) {
+            var categoria = funcoes.categorias[categorias[cont]];
+            posts_totais = 0;
+            //CALCULANDO TOTAL DE POSTS E DE PAGINAS
+            for (var cont2 = 0; cont2 < funcoes.categorias[categorias[cont]].length; cont2++) {
+                posts_totais += funcoes.categorias[categorias[cont]][cont2].id.length;
+            }
+            posts_ultima_pagina = posts_totais % 10;
+            if (posts_ultima_pagina > 0) {
+                paginas_totais = Math.floor((posts_totais / 10) + 1);
+            } else {
+                paginas_totais = Math.floor(posts_totais / 10);
+            }
+            paginas_categoria[categoria] = {
+                paginas: paginas_totais,
+                lista_paginas: {}
+            }
+            //LOOP PARA CADA PAGINA
+            for (cont2 = 1; cont2 <= paginas_totais; cont2++) {
+                paginas_categoria[categoria].lista_paginas[cont2] = [];
+                if (cont2 == paginas_totais) {
+                    postagens_restantes = posts_ultima_pagina;
+                } else {
+                    postagens_restantes = 10;
+                }
+                //ESTE TESTE DEVERIA SER FEITO DENTRO DO BLOCO 6665
+                if (cont == 1) {
+                    arquivo_index = categoria.length - 1;
+                } else {
+
+                }
+                //LOOP QUE ADICIONA OS ARQUIVOS AS PAGINAS
+                while (postagens_restantes > 0) {
+                    //PRIMEIRO ARQUIVO DA PRIMEIRA PAGINA DA CATEGORIA
+                    if (cont2 == 1 && postagens_restantes == 10) {
+                        postagens_restantes -= categoria[arquivo_index].id.length;
+                        paginas_categoria[categoria].lista_paginas[cont2].push(
+                            {
+                                arquivo: categoria[arquivo_index].arquivo,
+                                posts: categoria[arquivo_index].id.length,
+                                quais_posts: "todos"
+                            }
+                        );
+
+
+
+                        //-----BLOCO 6665----- PRIMEIRO ARQUIVO DE ALGUMA PAGINA QUE NÃO É A PRIMEIRA
+                        //ESTE DEVE PESQUISAR NA LISTAGEM DA PAGINA ANTERIOR PARA SABER DE ONDE COMEÇAR
+                    } else if (paginas_categoria[categoria].lista_paginas[cont2].length == 0) {
+
+
+
+
+                        //NÃO PASSANDO NO IF ANTERIOR TRATA-SE DE UM ARQUIVO QUE NÃO É O PRIMEIRO DE SUA PAGINA
+                        //ESSE TERÁ QUE BUSCAR NA POSIÇÃO ANTERIOR DA MESMA PAGINA PARA SABER DE ONDE COMEÇAR
+                    }else{
+
+                    }
+                }
+
+            }
+        }
+
+
     },
     //ATUALIZAR SESSOES -----------------------------------------------
     atualizar_sessoes: function () {
