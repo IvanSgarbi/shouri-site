@@ -36,7 +36,7 @@ para poder trocar a chamada síncrona de dados por a leitura da variável.
 
 - Listagem de todas as postagens do site com paginação					                            Difícil+				OK
 
-- Paginação para listagem das postagens																Difícil+++				Em progresso...
+- Paginação para listagem das postagens																Difícil+++²				Em progresso...
 
 - Aprimorar sistema de postagens									                                Difícil++				
 	(Na tela de postagem criar uma view para poder saber como a postagem vai ficar)
