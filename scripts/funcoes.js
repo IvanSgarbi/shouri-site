@@ -94,7 +94,7 @@ module.exports = {
                 lista_paginas: {
                     1: [
                         {
-                            arquivo: "1.json",
+                            arquivo: 1,
                             posts: 3,
                             quais_posts: "primeiros" || "todos" || "ultimos"
                         }
@@ -110,6 +110,7 @@ module.exports = {
         var paginas_totais;
         var postagens_restantes = 10;
         var arquivo_index;
+        var pagina_anterior;
         arquivos.sort();
         //LOOP PARA CADA CATEGORIA
         for (var cont = 0; cont < categorias.length; cont++) {
@@ -137,11 +138,9 @@ module.exports = {
                 } else {
                     postagens_restantes = 10;
                 }
-                //ESTE TESTE DEVERIA SER FEITO DENTRO DO BLOCO 6665
+                //TESTE PARA PAGINA 1 QUE DEVE COMEÇAR PELO ULTIMO ARQUIVO
                 if (cont == 1) {
                     arquivo_index = categoria.length - 1;
-                } else {
-
                 }
                 //LOOP QUE ADICIONA OS ARQUIVOS AS PAGINAS
                 while (postagens_restantes > 0) {
@@ -155,13 +154,31 @@ module.exports = {
                                 quais_posts: "todos"
                             }
                         );
-
-
-
                         //-----BLOCO 6665----- PRIMEIRO ARQUIVO DE ALGUMA PAGINA QUE NÃO É A PRIMEIRA
                         //ESTE DEVE PESQUISAR NA LISTAGEM DA PAGINA ANTERIOR PARA SABER DE ONDE COMEÇAR
                     } else if (paginas_categoria[categoria].lista_paginas[cont2].length == 0) {
+                        pagina_anterior = paginas_categoria[categoria].lista_paginas[cont2-1];
+                        var post_anterior =  pagina_anterior[pagina_anterior.length-1];
+                        if(post_anterior.quais_posts == "primeiros"){
 
+                        }else{
+                            //SE O POST ANTERIOR NÃO ESTA COM O VALOR "PRIMEIROS" SIGNIFICA QUE O INCREMENTO
+                            //DO CONTADOR DE POST ATUAL NÃO FOI ATUALIZADO CORRETAMENTE
+                        }
+
+
+
+
+                        postagens_restantes -= categoria[arquivo_index].id.length;
+
+
+                        paginas_categoria[categoria].lista_paginas[cont2].push(
+                            {
+                                arquivo: categoria[arquivo_index].arquivo,
+                                posts: categoria[arquivo_index].id.length,
+                                quais_posts: "todos"
+                            }
+                        );
 
 
 
