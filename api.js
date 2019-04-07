@@ -18,16 +18,16 @@ app.get("/", function (req, res) {
     res.sendFile(path.join(caminho + "/paginas/index.html"));
 });
 //ENDPOINT DE TESTES -----------------------------------------
-app.get("/teste", function (req, res) {
-    log("Foi o html de teste", "amarelo");
-    var caminho = __dirname;
-    var teste = req.query.teste;
-    res.write(teste);
-    res.end();
+// app.get("/teste", function (req, res) {
+//     log("Foi o html de teste", "amarelo");
+//     var caminho = __dirname;
+//     var teste = req.query.teste;
+//     res.write(teste);
+//     res.end();
 
-    // res.sendFile(path.join(caminho + "/paginas/teste.html"));
-});
-//LISTAGEM DE TODAS AS POSTAGENS --------------------------------
+//     // res.sendFile(path.join(caminho + "/paginas/teste.html"));
+// });
+//LISTAGEM DE TODAS AS POSTAGENS -----------------------------
 app.get("/feed", function (req, res) {
     log("FEED REQUISITADO");
     var pagina = req.query.pagina;
@@ -45,7 +45,7 @@ app.post("/login", function (dados, res) {
     funcoes.logar(dados.id, dados.senha, res);
 
 });
-//ACESSAR POST --------------------------------------------------------
+//ACESSAR POST -----------------------------------------------
 app.get("/post/:id", function (req, res) {
     log("O post id=" + req.params.id + " foi solicitado", "amarelo");
     funcoes.post_id(req.params.id, res);

@@ -78,7 +78,8 @@ module.exports = {
                         funcoes.ids = ids;
                         server = app.listen(port);
                         server.timeout = 3000;
-                        log(funcoes.ids);
+                        log(funcoes.ids.length + "IDs carregados");
+                        funcoes.iniciar_paginacao_categorias();
                         log("INICIANDO SERVIDOR...........", "verde");
                     }
                 }
@@ -86,8 +87,10 @@ module.exports = {
         }
         //Configurar as paginações das categorias na inicialização ------
         iniciar_configuracoes();
+
     },
     iniciar_paginacao_categorias: function () {
+        var funcoes = this;
         var ESTRUTURA_DAS_PAGINAS = {
             "Anime": {
                 paginas: 10,
@@ -106,19 +109,22 @@ module.exports = {
         var posts_por_pagina = 10;
         var categorias = Object.keys(funcoes.categorias);
         var posts_totais;
-        var posts_ultima_pagina = 10;
+        var posts_ultima_pagina;
         var paginas_totais;
         var postagens_restantes = 10;
         var arquivo_index;
-        var pagina_anterior;
-        arquivos.sort();
+        var cont_posts;
+        log("Iniciando paginação");
         //LOOP PARA CADA CATEGORIA
         for (var cont = 0; cont < categorias.length; cont++) {
-            var categoria = funcoes.categorias[categorias[cont]];
+            var categoria_nome = categorias[cont]
+            var categoria = funcoes.categorias[categoria_nome];
+
+            log("paginando categoria " + categoria_nome);
             posts_totais = 0;
             //CALCULANDO TOTAL DE POSTS E DE PAGINAS
-            for (var cont2 = 0; cont2 < funcoes.categorias[categorias[cont]].length; cont2++) {
-                posts_totais += funcoes.categorias[categorias[cont]][cont2].id.length;
+            for (var cont2 = 0; cont2 < funcoes.categorias[categoria_nome].length; cont2++) {
+                posts_totais += funcoes.categorias[categoria_nome][cont2].id.length;
             }
             posts_ultima_pagina = posts_totais % 10;
             if (posts_ultima_pagina > 0) {
@@ -126,73 +132,102 @@ module.exports = {
             } else {
                 paginas_totais = Math.floor(posts_totais / 10);
             }
-            paginas_categoria[categoria] = {
+            paginas_categoria[categoria_nome] = {
                 paginas: paginas_totais,
                 lista_paginas: {}
             }
+            log("categoria " + categoria_nome + " terá " + posts_totais + " posts");
             //LOOP PARA CADA PAGINA
             for (cont2 = 1; cont2 <= paginas_totais; cont2++) {
-                paginas_categoria[categoria].lista_paginas[cont2] = [];
+                log("Pagina " + cont2);
+                paginas_categoria[categoria_nome].lista_paginas[cont2] = [];
                 if (cont2 == paginas_totais) {
                     postagens_restantes = posts_ultima_pagina;
                 } else {
                     postagens_restantes = 10;
                 }
                 //TESTE PARA PAGINA 1 QUE DEVE COMEÇAR PELO ULTIMO ARQUIVO
-                if (cont == 1) {
+                if (cont2 == 1) {
                     arquivo_index = categoria.length - 1;
                 }
                 //LOOP QUE ADICIONA OS ARQUIVOS AS PAGINAS
                 while (postagens_restantes > 0) {
+                    log("Postagens restantes: " + postagens_restantes);
                     //PRIMEIRO ARQUIVO DA PRIMEIRA PAGINA DA CATEGORIA
-                    if (cont2 == 1 && postagens_restantes == 10) {
+                    if ((cont2 == 1 && postagens_restantes == 10) ||
+                        (paginas_totais == 1 && postagens_restantes == posts_ultima_pagina)) {
+                        log("PRIMEIRO ARQUIVO DA PRIMEIRA PAGINA DA CATEGORIA");
+                        log(categoria);
+                        log(arquivo_index);
                         postagens_restantes -= categoria[arquivo_index].id.length;
-                        paginas_categoria[categoria].lista_paginas[cont2].push(
+                        paginas_categoria[categoria_nome].lista_paginas[cont2].push(
                             {
                                 arquivo: categoria[arquivo_index].arquivo,
+                                arquivo_index: arquivo_index,
                                 posts: categoria[arquivo_index].id.length,
                                 quais_posts: "todos"
                             }
                         );
-                        //-----BLOCO 6665----- PRIMEIRO ARQUIVO DE ALGUMA PAGINA QUE NÃO É A PRIMEIRA
+                        arquivo_index--;
+                        //PRIMEIRO ARQUIVO DE ALGUMA PAGINA QUE NÃO É A PRIMEIRA
                         //ESTE DEVE PESQUISAR NA LISTAGEM DA PAGINA ANTERIOR PARA SABER DE ONDE COMEÇAR
-                    } else if (paginas_categoria[categoria].lista_paginas[cont2].length == 0) {
-                        pagina_anterior = paginas_categoria[categoria].lista_paginas[cont2-1];
-                        var post_anterior =  pagina_anterior[pagina_anterior.length-1];
-                        if(post_anterior.quais_posts == "primeiros"){
-
-                        }else{
-                            //SE O POST ANTERIOR NÃO ESTA COM O VALOR "PRIMEIROS" SIGNIFICA QUE O INCREMENTO
-                            //DO CONTADOR DE POST ATUAL NÃO FOI ATUALIZADO CORRETAMENTE
-                        }
-
-
-
-
-                        postagens_restantes -= categoria[arquivo_index].id.length;
-
-
-                        paginas_categoria[categoria].lista_paginas[cont2].push(
+                    } else if (paginas_categoria[categoria_nome].lista_paginas[cont2].length == 0) {
+                        log("PRIMEIRO ARQUIVO DE ALGUMA PAGINA QUE NÃO É A PRIMEIRA");
+                        var pagina_anterior = paginas_categoria[categoria_nome].lista_paginas[cont2 - 1];
+                        var post_anterior = pagina_anterior[pagina_anterior.length - 1];
+                        cont_posts = categoria[arquivo_index].id.length - post_anterior.posts;
+                        postagens_restantes -= cont_posts;
+                        paginas_categoria[categoria_nome].lista_paginas[cont2].push(
                             {
                                 arquivo: categoria[arquivo_index].arquivo,
-                                posts: categoria[arquivo_index].id.length,
-                                quais_posts: "todos"
+                                arquivo_index: arquivo_index,
+                                posts: cont_posts,
+                                quais_posts: "ultimos"
                             }
                         );
-
-
-
-                        //NÃO PASSANDO NO IF ANTERIOR TRATA-SE DE UM ARQUIVO QUE NÃO É O PRIMEIRO DE SUA PAGINA
-                        //ESSE TERÁ QUE BUSCAR NA POSIÇÃO ANTERIOR DA MESMA PAGINA PARA SABER DE ONDE COMEÇAR
-                    }else{
-
+                        arquivo_index--;
+                    } else {
+                        //ARQUIVO QUE NÃO É O PRIMEIRO; fazer os casos:
+                        //'primeiros'(caso a quantidade de posts no arquivo seja maior q o número de postagens restantes)(NÃO DECREMENTA CONTADOR)
+                        //e 'todos' (caso o número de postagens restantes seja maior ou igual q a quantidade de posts no arquivo)(DECREMENTA CONTADOR)
+                        log("ARQUIVO QUE NÃO É O PRIMEIRO");
+                        log(paginas_categoria[categoria_nome]);
+                        //TESTANDO PRA SABER SE EXISTE PAGINA ANTERIOR                        
+                        var pagina = paginas_categoria[categoria_nome].lista_paginas[cont2];
+                        var post_anterior = pagina[pagina.length - 1];
+                        if (categoria[arquivo_index].id.length < postagens_restantes) {
+                            log("primeiros");
+                            cont_posts = categoria[arquivo_index].id.length;
+                            postagens_restantes -= cont_posts;
+                            paginas_categoria[categoria_nome].lista_paginas[cont2].push(
+                                {
+                                    arquivo: categoria[arquivo_index].arquivo,
+                                    arquivo_index: arquivo_index,
+                                    posts: cont_posts,
+                                    quais_posts: "todos"
+                                }
+                            );
+                            arquivo_index--;
+                        } else {
+                            log("todos");
+                            cont_posts = postagens_restantes;
+                            postagens_restantes -= cont_posts;
+                            paginas_categoria[categoria_nome].lista_paginas[cont2].push(
+                                {
+                                    arquivo: categoria[arquivo_index].arquivo,
+                                    arquivo_index: arquivo_index,
+                                    posts: cont_posts,
+                                    quais_posts: "primeiros"
+                                }
+                            );
+                        }
                     }
                 }
-
             }
         }
-
-
+        log("Paginação Concluída com sucesso!", "verde");
+        //log(JSON.stringify(paginas_categoria));
+        funcoes.paginacao_categorias = paginas_categoria;
     },
     //ATUALIZAR SESSOES -----------------------------------------------
     atualizar_sessoes: function () {
@@ -655,14 +690,37 @@ module.exports = {
         var funcoes = this;
         var posts = {};
         var cont;
+        var map_pagina;
+        log("pagina solicitada:" + pagina);
+        pagina = Number(pagina);
         if (cat) {
             log("Encontrando a categoria: " + cat);
-            var mapa = funcoes.categorias
+            var mapa = funcoes.categorias;
+            var paginacao = funcoes.paginacao_categorias;
             if (mapa[cat]) {
-                log("categoria encontrada no mapa", "verde");
-                for (cont = 0; cont < mapa[cat].length; cont++) {
-                    posts[mapa[cat][cont].arquivo] = mapa[cat][cont].id;
+                if (isNaN(pagina) || pagina < 1) {
+                    log("Definindo página como 1 por não ser um número válido");
+                    pagina = 1;
+                } else if (pagina > paginacao[cat].paginas) {
+                    log("Definindo página para "+paginacao[cat].paginas+" por passar do limite");
+                    pagina = paginacao[cat].paginas;
                 }
+                log("categoria encontrada no mapa", "verde");
+                for (cont = 0; cont < paginacao[cat].lista_paginas[pagina].length; cont++) {
+                    map_pagina = paginacao[cat].lista_paginas[pagina][cont];
+                    if (map_pagina.quais_posts == "todos") {
+                        log("arquivo "+map_pagina.arquivo+ "terá todos os posts lidos");
+                        posts[map_pagina.arquivo] = mapa[cat][map_pagina.arquivo_index].id;
+                    } else if (map_pagina.quais_posts == "primeiros") {
+                        log("arquivo "+map_pagina.arquivo+ "terá os primeiros posts lidos");
+                        posts[map_pagina.arquivo] =
+                            mapa[cat][map_pagina.arquivo_index].id.slice(0, map_pagina.posts);
+                    } else {
+                        log("arquivo "+map_pagina.arquivo+ "terá os últimos posts lidos");
+                        posts[map_pagina.arquivo] =
+                            mapa[cat][map_pagina.arquivo_index].id.slice(map_pagina.posts * -1);
+                    }
+                };
                 funcoes.criar_lista_posts(posts, res, pagina);
             } else {
                 log("Categoria não encontrada", "vermelho");
