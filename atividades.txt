@@ -40,6 +40,9 @@ para poder trocar a chamada síncrona de dados por a leitura da variável.
 
 - Automaticamente Incluir autor como categoria da postagem                                          Fácil
 
+- Enviar junto com postagens o total de páginas tanto do
+feed quanto da categoria para montar menus de  paginação											Fácil
+
 BACK
 -------------------------------------------------------------------------------------------------
 FRONT
@@ -47,5 +50,9 @@ FRONT
 	(Na tela de postagem criar uma view para poder saber como a postagem vai ficar)
 
 - Idealizar o Layout										                                        Difícil					
+
+-Paginação no front para categorias																	Médio
+
+-Paginação no front para Feed																		Médio
 
                   	
