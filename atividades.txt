@@ -38,21 +38,31 @@ para poder trocar a chamada síncrona de dados por a leitura da variável.
 
 - Paginação para listagem das postagens																Difícil+++²				OK PORRA
 
-- Automaticamente Incluir autor como categoria da postagem                                          Fácil
-
 - Enviar junto com postagens o total de páginas tanto do
-feed quanto da categoria para montar menus de  paginação											Fácil
+feed quanto da categoria para montar menus de paginação												Fácil					OK
+
+- Resolver ordenação de posts do feed																Fácil					OK
 
 BACK
--------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
 FRONT
-- Aprimorar sistema de postagens									                                Difícil				
+
+- Automaticamente Incluir autor como categoria da postagem                                          Fácil					OK
+
+- Paginação no front para categoria																	Fácil					OK
+
+- Paginação no front para FEED																		Fácil					OK
+
+-Paginação no front para categorias																	Médio					OK
+
+-Paginação no front para Feed																		Médio					OK
+
+- Aprimorar painel (Refinar melhor)																	?
+
+- Aprimorar sistema de postagens									                                Difícil					
 	(Na tela de postagem criar uma view para poder saber como a postagem vai ficar)
 
 - Idealizar o Layout										                                        Difícil					
 
--Paginação no front para categorias																	Médio
-
--Paginação no front para Feed																		Médio
 
                   	

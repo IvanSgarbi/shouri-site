@@ -6,6 +6,10 @@ document.onclick = function (ev) {
         var titulo = document.getElementById("titulo_postagem").value;
         var texto = document.getElementById("texto_postagem").value;
         var id = document.getElementById("id_postagem").value;
+        var user_id = localStorage.getItem("shouri-user");
+        if(!categorias_adicionadas.includes(user_id)){
+            categorias_adicionadas.push(user_id);
+        }
         if (titulo != "" && texto != "" && id != "") {
             var conexao;
             var post = {
@@ -14,7 +18,7 @@ document.onclick = function (ev) {
                 "categorias": categorias_adicionadas,
                 "id": id,
                 "user": {
-                    "id": localStorage.getItem("shouri-user"),
+                    "id": user_id,
                     "token": localStorage.getItem("shouri-token")
                 }
             }

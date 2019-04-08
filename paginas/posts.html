@@ -17,8 +17,14 @@
             <br>
             <p class="postagem-lista" dk="texto:texto"></p>
         </div>
+        <a id="primeira-pagina"><button>Primeira</button></a>
+        <div id="paginacao"></div>
+        <a id="ultima-pagina" ><button >Última</button></a>
         <script src="scripts/dk-tags.js"></script>
-        <script>var postagens = lista_postagens;</script>
+        <script>
+            var paginas = _paginas_;
+            var postagens = lista_postagens;
+        </script>
         <script src="scripts/posts.js"></script>
     </div>
 </body>

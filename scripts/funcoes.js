@@ -691,6 +691,7 @@ module.exports = {
         var posts = {};
         var cont;
         var map_pagina;
+        var total_paginas;
         log("pagina solicitada:" + pagina);
         pagina = Number(pagina);
         if (cat) {
@@ -702,26 +703,30 @@ module.exports = {
                     log("Definindo página como 1 por não ser um número válido");
                     pagina = 1;
                 } else if (pagina > paginacao[cat].paginas) {
-                    log("Definindo página para "+paginacao[cat].paginas+" por passar do limite");
+                    log("Definindo página para " + paginacao[cat].paginas + " por passar do limite");
                     pagina = paginacao[cat].paginas;
                 }
+                total_paginas = JSON.stringify({
+                    atual: pagina,
+                    total: paginacao[cat].paginas
+                });
                 log("categoria encontrada no mapa", "verde");
                 for (cont = 0; cont < paginacao[cat].lista_paginas[pagina].length; cont++) {
                     map_pagina = paginacao[cat].lista_paginas[pagina][cont];
                     if (map_pagina.quais_posts == "todos") {
-                        log("arquivo "+map_pagina.arquivo+ "terá todos os posts lidos");
+                        log("arquivo " + map_pagina.arquivo + "terá todos os posts lidos");
                         posts[map_pagina.arquivo] = mapa[cat][map_pagina.arquivo_index].id;
                     } else if (map_pagina.quais_posts == "primeiros") {
-                        log("arquivo "+map_pagina.arquivo+ "terá os primeiros posts lidos");
+                        log("arquivo " + map_pagina.arquivo + "terá os primeiros posts lidos");
                         posts[map_pagina.arquivo] =
                             mapa[cat][map_pagina.arquivo_index].id.slice(0, map_pagina.posts);
                     } else {
-                        log("arquivo "+map_pagina.arquivo+ "terá os últimos posts lidos");
+                        log("arquivo " + map_pagina.arquivo + "terá os últimos posts lidos");
                         posts[map_pagina.arquivo] =
                             mapa[cat][map_pagina.arquivo_index].id.slice(map_pagina.posts * -1);
                     }
                 };
-                funcoes.criar_lista_posts(posts, res, pagina);
+                funcoes.criar_lista_posts(posts, res, total_paginas);
             } else {
                 log("Categoria não encontrada", "vermelho");
                 res.sendFile(path.join(diretorio + "/paginas/404.html"));
@@ -734,7 +739,7 @@ module.exports = {
         }
     },
     //MONTAR LISTA DE POSTS -----------------------------------------------------------------
-    criar_lista_posts: function (posts, res) {
+    criar_lista_posts: function (posts, res, paginas) {
         var funcoes = this;
         var cont_post;
         var arquivo_atual;
@@ -771,20 +776,20 @@ module.exports = {
                         loop_ler_arquivos(cont, limite);
                     } else {
                         log("Enviando lista de posts: ", "verde");
-                        funcoes.ordenar_posts(lista_posts, res);
+                        funcoes.ordenar_posts(lista_posts, res, false, paginas);
                     }
                 }
             );
         }
     },
     //ORDENAR POSTS -------------------------------------------------------------------------
-    ordenar_posts: function (lista_posts, res, retornar) {
+    ordenar_posts: function (lista_posts, res, retornar, paginas) {
         var funcoes = this;
         lista_posts.sort(function (a, b) {
             if (a.data < b.data) {
-                return -1;
-            } else if (a.data > b.data) {
                 return 1;
+            } else if (a.data > b.data) {
+                return -1;
             } else {
                 return 0;
             }
@@ -792,12 +797,12 @@ module.exports = {
         if (retornar) {
             return lista_posts;
         } else {
-            funcoes.enviar_pagina_posts(lista_posts, res);
+            funcoes.enviar_pagina_posts(lista_posts, res, paginas);
         }
 
     },
     //ENVIAR PÁGINA DE POSTS -----------------------------------------------------------------
-    enviar_pagina_posts: function (lista_posts, res) {
+    enviar_pagina_posts: function (lista_posts, res, paginas) {
         lista_posts = JSON.stringify({ posts: lista_posts });
         fs.readFile(
             path.join(diretorio + "/paginas/posts.html"),
@@ -811,11 +816,13 @@ module.exports = {
                 } else {
                     log("Enviando página de post", "verde");
                     pagina = pagina.toString()
-                        .replace("lista_postagens", lista_posts);
+                        .replace("lista_postagens", lista_posts)
+                        .replace("_paginas_", paginas);
                     res.send(pagina);
                     res.end();
                 }
-            });
+            }
+        );
     },
     //ENVIAR PÁGINA DE POST -----------------------------------------------------------------
     enviar_post: function (res, post) {
@@ -1269,8 +1276,7 @@ module.exports = {
         var total_pag = funcoes.config.posts.ultimo_arquivo;
         var posts_ultimo_arquivo = funcoes.config.posts.posts_ultimo_arquivo;
         var arquivos = [];
-        var mensagem = "";
-        var listagem_final = [];
+        var listagem_final = [];        
         if (!pagina) {
             pagina = 1;
         } else {
@@ -1281,6 +1287,12 @@ module.exports = {
         } else if (pagina < 1) {
             pagina = 1;
         }
+        var paginacao = JSON.stringify(
+            {
+                atual: pagina,
+                total: total_pag
+            }
+        );
         arquivos.push({ arquivo: (total_pag - (pagina - 1)), posts: posts_ultimo_arquivo });
         if (posts_ultimo_arquivo < 10 && (total_pag - pagina) > 0) {
             arquivos.push({ arquivo: (total_pag - pagina), posts: (10 - posts_ultimo_arquivo) });
@@ -1321,8 +1333,8 @@ module.exports = {
                                 log("chamando a segunda etapa, o arquivo de listagem final contém " + listagem_final.length + " posts");
                                 montar_listagem(1, res, arquivos, listagem_final);
                             } else {
-                                res.send(listagem_final);
-                                res.end();
+                                listagem_final = funcoes.ordenar_posts(listagem_final,null,true,null);
+                                funcoes.enviar_pagina_posts(listagem_final, res, paginacao);
                             }
                         } else {
                             log("Montando listagem final. Etapa: " + (etapa + 1) + "/" + arquivos.length);
@@ -1330,8 +1342,8 @@ module.exports = {
                                 log("capturando postagem numero " + cont + " e adicionando a listagem");
                                 listagem_final.push(posts_array[cont]);
                             }
-                            res.send(listagem_final);
-                            res.end();
+                            listagem_final = funcoes.ordenar_posts(listagem_final,null,true,null);
+                            funcoes.enviar_pagina_posts(listagem_final, res, paginacao);
                         }
                     }
                 }
