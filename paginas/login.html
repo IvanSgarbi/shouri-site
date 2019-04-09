@@ -5,18 +5,30 @@
     <meta charset="UTF-8">
     <title>Shouri Site</title>
     <link rel="icon" href="img/favicon.png" type="image/png">
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
-    Bem vindo a home do shouri.
-    <br><br>
-    ID:<input type="text" name="" id="id">
-    Senha:<input type="password" name="" id="senha">
-    <button id="logar">Logar Admin!</button>
-    <p id="texto"></p>
-    <p id="texto2"></p>
+    <div id="div-form-login">
+        <p>Acesso ao painel administrativo</p>
+        <br><br>
+        <form action="">
+            <table>
+                <tr>
+                    <td>ID:</td>
+                    <td><input type="text" required name="" id="id"></td>
+                </tr>
+                <tr>
+                    <td>SENHA:</td>
+                    <td><input type="password" required name="" id="senha"></td>
+                </tr>
+            </table>
+            <button type="submit" id="logar">LOGAR!</button>
+        </form>
+        <p id="texto"></p>
+    </div>
     <br>
-    <a href="/painel"><button>Acessar Painel</button></a>
+    <a href="/painel"><button>PAINEL</button></a>
+    <a href="/"><button>HOME</button></a>
     <script src="scripts/login.js"></script>
 </body>
-
 </html>

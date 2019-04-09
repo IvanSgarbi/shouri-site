@@ -1,0 +1,53 @@
+html{
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+*{
+    font-family: "Arial Black";
+}
+body {
+    background-image: linear-gradient(to bottom,#111, #ff7b00);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+button {
+    font-style: italic;
+    font-weight: bold;
+    border: 1px solid #FFFFFF;
+    background: #000000;
+    color: #FFFFFF;
+    height: 30px;
+    min-width: 100px;
+}
+.tabela {
+    margin: auto;
+    /* display: block; */
+    width: 600px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    background: #CCCCCC;
+}
+
+#categorias>tbody {
+    /* display: block; */
+    width: 100%;
+}
+
+#categorias tr {
+    width: 100%;
+    border: black solid 1px;
+}
+
+#categorias td {
+    width: 50%;
+}
+
+#categorias tr td {
+    text-align: center;
+    vertical-align: middle;
+}
