@@ -1,4 +1,10 @@
 function requisitar() {
+    var shouri_user = localStorage.getItem("shouri-user");
+    var shouri_token = localStorage.getItem("shouri-token");
+    if(!(shouri_user && shouri_token)){
+        redirecionar();
+        return;
+    }
     var conexao = new XMLHttpRequest();
     conexao.open("GET", location.pathname, true);
     conexao.setRequestHeader("shouri-token", localStorage.getItem("shouri-token"));
@@ -13,7 +19,12 @@ function requisitar() {
             if (!("ActiveXObject" in window)) {
                 //alert("NÃO É O ie CHAMANDO DOCUMENT CLOSE");
                 document.close();
+            }else{
+                alert("IE");
             }
         }
     }
+}
+function redirecionar(){
+    window.location.replace("/login");
 }

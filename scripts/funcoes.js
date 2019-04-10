@@ -91,20 +91,6 @@ module.exports = {
     },
     iniciar_paginacao_categorias: function () {
         var funcoes = this;
-        var ESTRUTURA_DAS_PAGINAS = {
-            "Anime": {
-                paginas: 10,
-                lista_paginas: {
-                    1: [
-                        {
-                            arquivo: 1,
-                            posts: 3,
-                            quais_posts: "primeiros" || "todos" || "ultimos"
-                        }
-                    ]
-                }
-            }
-        }
         var paginas_categoria = {}
         var posts_por_pagina = 10;
         var categorias = Object.keys(funcoes.categorias);
@@ -1276,7 +1262,7 @@ module.exports = {
         var total_pag = funcoes.config.posts.ultimo_arquivo;
         var posts_ultimo_arquivo = funcoes.config.posts.posts_ultimo_arquivo;
         var arquivos = [];
-        var listagem_final = [];        
+        var listagem_final = [];
         if (!pagina) {
             pagina = 1;
         } else {
@@ -1333,7 +1319,7 @@ module.exports = {
                                 log("chamando a segunda etapa, o arquivo de listagem final contém " + listagem_final.length + " posts");
                                 montar_listagem(1, res, arquivos, listagem_final);
                             } else {
-                                listagem_final = funcoes.ordenar_posts(listagem_final,null,true,null);
+                                listagem_final = funcoes.ordenar_posts(listagem_final, null, true, null);
                                 funcoes.enviar_pagina_posts(listagem_final, res, paginacao);
                             }
                         } else {
@@ -1342,7 +1328,7 @@ module.exports = {
                                 log("capturando postagem numero " + cont + " e adicionando a listagem");
                                 listagem_final.push(posts_array[cont]);
                             }
-                            listagem_final = funcoes.ordenar_posts(listagem_final,null,true,null);
+                            listagem_final = funcoes.ordenar_posts(listagem_final, null, true, null);
                             funcoes.enviar_pagina_posts(listagem_final, res, paginacao);
                         }
                     }

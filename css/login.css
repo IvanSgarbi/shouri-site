@@ -54,7 +54,8 @@ button {
     text-align: right;
 }
 
-#div-form-login~a button {
+.link-botao {
+    width: fit-content;
     display: block;
     margin: auto;
     margin-top: 50px;

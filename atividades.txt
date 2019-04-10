@@ -57,7 +57,7 @@ FRONT
 
 -Paginação no front para Feed																		Médio					OK
 
-- Criar página de login																				Médio					Em progresso...
+- Criar página de login																				Médio					OK
 
 - Aprimorar painel (Refinar melhor)																	?
 

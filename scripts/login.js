@@ -1,3 +1,4 @@
+history.pushState(null,null,"/login");
 function log(mensagem) {
     console.log(mensagem);
 }
@@ -14,13 +15,12 @@ function logar(dados) {
         } else {
             document.getElementById("texto").innerText = "Erro no login!";
         }
-    };
+    }
 }
-document.onclick = function (evento) {
+function form_login(){
     var id = document.getElementById("id").value;
     var senha = document.getElementById("senha").value;
-    if (evento.target == document.getElementById("logar")
-        && id && senha) {
+    if (id && senha) {
         var dados = {
             id: id,
             senha: senha

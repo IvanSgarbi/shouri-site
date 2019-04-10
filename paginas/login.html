@@ -7,11 +7,12 @@
     <link rel="icon" href="img/favicon.png" type="image/png">
     <link rel="stylesheet" href="css/login.css">
 </head>
+
 <body>
     <div id="div-form-login">
         <p>Acesso ao painel administrativo</p>
         <br><br>
-        <form action="">
+        <form action="javascript:form_login()">
             <table>
                 <tr>
                     <td>ID:</td>
@@ -27,8 +28,13 @@
         <p id="texto"></p>
     </div>
     <br>
-    <a href="/painel"><button>PAINEL</button></a>
-    <a href="/"><button>HOME</button></a>
+    <div class="link-botao">
+        <a href="/painel"><button>PAINEL</button></a>
+    </div>
+    <div class="link-botao">
+        <a href="/"><button>HOME</button></a>
+    </div>
     <script src="scripts/login.js"></script>
 </body>
+
 </html>
