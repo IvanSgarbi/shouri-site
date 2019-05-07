@@ -1,0 +1,56 @@
+body {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+}
+html{
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+*{
+    color: azure;
+    font-family: "Arial Black";
+}
+#banner{
+    border: 1px solid black;
+    width: 100%;
+    height: 300px;
+}
+#site{
+    width: 900px;
+    border: 1px solid black;
+    margin: auto;
+    min-height: 500px;
+}
+#menu{
+    border: 1px solid black;
+    width: 100%;
+    height: 50px;
+}
+#conteudo{
+    border: 1px solid black;
+    width: 100%;
+    min-height: 200px;
+}
+#conteudo #post1{
+    display: inline-block;
+    border: 1px solid blue;
+    width: 44%;
+    height: 300px;
+    margin: 2%;
+}
+#conteudo #posts-menores{
+    display: inline-block;
+    border: 1px solid blue;
+    width: 44%;
+    height: 300px;
+    margin: 2%;
+}
+#conteudo #post2,#conteudo #post3{
+    border: 1px solid red;
+    width: 94%;
+    height: 130px;
+    margin: 3%;
+}

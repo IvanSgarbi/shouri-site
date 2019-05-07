@@ -28,7 +28,7 @@ button {
     color: #FFFFFF;
     background: #000000;
     padding: 10px;
-    width: fit-content;
+    width: 400px;
     border-radius: 10px;
     border: 2px solid #FFFFFF;
     margin: auto;
@@ -43,7 +43,10 @@ button {
 }
 
 #div-form-login form {
-    text-align: left;
+    text-align: center;
+}
+#div-form-login form table {
+    margin: auto;
 }
 
 #div-form-login form input {
@@ -55,8 +58,11 @@ button {
 }
 
 .link-botao {
-    width: fit-content;
     display: block;
     margin: auto;
     margin-top: 50px;
+    text-align: center;
+}
+.link-botao *{
+    margin: auto;
 }

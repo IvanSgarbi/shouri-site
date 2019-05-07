@@ -33,8 +33,8 @@ document.getElementById("carregar-usuarios").onclick = function (evento) {
     conexao.setRequestHeader("content-type", "application/json");
     conexao.send(JSON.stringify(credenciais));
     conexao.onreadystatechange = function () {
-        if (this.response && this.readyState == 4 && this.status == 200) {
-            document.getElementById("paragrafo-usuarios").innerText = this.responseText;
+        if (this.response && this.readyState == 4 && this.status == 200) {            
+            preencher_lista_users(document.getElementById("paragrafo-usuarios"),this.responseText);
         } else {
             console.log(this.responseText);
             document.getElementById("paragrafo-usuarios").innerText = "";
@@ -156,8 +156,29 @@ function adicionar_categoria(categoria) {
             if (this.response && this.readyState == 4 && this.status == 200) {
                 console.log(this.responseText);
             }
+            else if(this.response && this.readyState == 4 && this.status == 500){
+                alert(this.responseText);
+            }
         }
     } else {
         alert("preencha o campo de caegoria");
     }
+}
+function preencher_lista_users(elemento, lista){    
+    var tabela = "";
+    lista = JSON.parse(lista);
+    console.log(lista);
+    tabela +=  "<table id=tabela-usuarios class='tabela'><tr><td colspan=3 tabela-usuarios-titulo>USUÁRIOS</td></tr>"+
+    "<tr><td>ID</td><td>ADMIN</td><td>email</td></tr>";
+    for (var cont = 0;  cont < lista.length; cont++) {
+        if(lista[cont].admin){
+            lista[cont].admin = "<img height=25; src='img/ok.png'/>"
+        }else{
+            lista[cont].admin = "";
+        }
+        tabela += "<tr><td>"+lista[cont].id+"</td><td>"+lista[cont].admin+"</td><td>"+lista[cont].email+"</td></tr>";        
+    }
+    tabela += "</table>";
+    elemento.innerHTML = tabela;
+    
 }

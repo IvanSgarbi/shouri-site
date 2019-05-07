@@ -1046,6 +1046,7 @@ module.exports = {
             res.end();
         } else {
             log("CATEGORIA EXISTENTE, operação cancelada", "vermelho");
+            res.status(500);
             res.write("categoria existente");
             res.end();
         }

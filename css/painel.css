@@ -32,11 +32,14 @@ button {
     border: 1px solid #000000;
     border-radius: 5px;
     background: #000000;
+
 }
 tr:nth-child(even){
     background: #222222;
 }
-
+#categorias{
+    top:20px;
+}
 #categorias>tbody {
     /* display: block; */
     width: 100%;
@@ -54,4 +57,13 @@ tr:nth-child(even){
 #categorias tr td {
     text-align: center;
     vertical-align: middle;
+}
+#nova-categoria{
+    background: #666666;
+}
+#carregar-categorias{
+    margin-bottom:20px;
+}
+#postar{
+    margin-top: 20px;
 }
