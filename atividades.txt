@@ -43,13 +43,19 @@ feed quanto da categoria para montar menus de paginação												Fácil					
 
 - Resolver ordenação de posts do feed																Fácil					OK
 
+- Criar Painel de gerenciamento da Home																Difícil+
+
+- Verificar IP para conter ataques de força bruta													Dificíl+
+
+
+
 BACK
 ----------------------------------------------------------------------------------------------------------------------------------------
 FRONT
 
 - Automaticamente Incluir autor como categoria da postagem                                          Fácil					OK
 
-- Paginação no front para categoria																	Fácil					OK
+- Paginação no front para categoria																	Quaseimpossível			OK
 
 - Paginação no front para FEED																		Fácil					OK
 
@@ -58,6 +64,8 @@ FRONT
 -Paginação no front para Feed																		Médio					OK
 
 - Criar página de login																				Médio					OK
+
+- Login redireciona para painel																		Fácil					OK
 
 - Aprimorar painel (Refinar melhor)																	?
 

@@ -11,7 +11,7 @@ function logar(dados) {
         var resposta = this;
         if (resposta.status == 200 && resposta.responseText != "Falha") {
             localStorage.setItem("shouri-token", this.responseText);
-            document.getElementById("texto").innerText = "Logado!";
+            window.location.href = "/painel";
         } else {
             document.getElementById("texto").innerText = "Erro no login!";
         }
