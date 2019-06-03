@@ -47,6 +47,8 @@ feed quanto da categoria para montar menus de paginação												Fácil					
 
 - Verificar IP para conter ataques de força bruta													Dificíl+
 
+- Ajustar LOGS de produção																Médio
+
 
 
 BACK
@@ -71,6 +73,8 @@ FRONT
 
 - Aprimorar sistema de postagens									                                Difícil					
 	(Na tela de postagem criar uma view para poder saber como a postagem vai ficar)
+	(Criar um sistema de preview em que a pessoa ve como a postagem ficaria dentro
+	do layout do site através da própria página de post)
 
 - Idealizar o Layout										                                        Difícil					
 
